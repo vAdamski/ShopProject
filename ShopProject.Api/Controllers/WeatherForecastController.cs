@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShopProject.Shared;
 
 namespace ShopProject.Api.Controllers;
 

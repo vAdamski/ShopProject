@@ -27,6 +27,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ShopProject.Application\ShopProject.Application.csproj" />
+      <ProjectReference Include="..\ShopProject.Client\ShopProject.Client.csproj" />
       <ProjectReference Include="..\ShopProject.Infrastructure\ShopProject.Infrastructure.csproj" />
       <ProjectReference Include="..\ShopProject.Persistence\ShopProject.Persistence.csproj" />
     </ItemGroup>

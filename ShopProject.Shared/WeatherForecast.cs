@@ -1,4 +1,4 @@
-namespace ShopProject.Api;
+namespace ShopProject.Shared;
 
 public class WeatherForecast
 {
