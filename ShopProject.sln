@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityServer", "IdentityS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopProject.Shared", "ShopProject.Shared\ShopProject.Shared.csproj", "{8E1364C0-0DC3-4D15-96F1-F47EF538111A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuendeIdentityServer", "DuendeIdentityServer\DuendeIdentityServer.csproj", "{D9CD2074-7CD2-44E5-8205-9DFDA02D46F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{8E1364C0-0DC3-4D15-96F1-F47EF538111A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E1364C0-0DC3-4D15-96F1-F47EF538111A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E1364C0-0DC3-4D15-96F1-F47EF538111A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9CD2074-7CD2-44E5-8205-9DFDA02D46F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9CD2074-7CD2-44E5-8205-9DFDA02D46F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9CD2074-7CD2-44E5-8205-9DFDA02D46F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9CD2074-7CD2-44E5-8205-9DFDA02D46F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F7BD0056-7E9E-49AE-8381-12B33CCE8D3F} = {7F57C722-9196-4DA7-AE4A-B1938FB63C21}
 		{8E1364C0-0DC3-4D15-96F1-F47EF538111A} = {7F57C722-9196-4DA7-AE4A-B1938FB63C21}
+		{D9CD2074-7CD2-44E5-8205-9DFDA02D46F3} = {91588B3F-103A-449F-8CA3-16B0AA5D616F}
 	EndGlobalSection
 EndGlobal
