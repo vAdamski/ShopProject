@@ -23,7 +23,7 @@ public class ProfileService : IProfileService
 
         var claims = new List<Claim>()
         {
-            new Claim("Email", user.Email),
+            new Claim("email", user.Email),
             new Claim("name", user.UserName),
             new Claim("firstName", user.FirstName),
             new Claim("lastName", user.LastName)
