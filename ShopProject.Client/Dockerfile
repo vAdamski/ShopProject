@@ -7,4 +7,6 @@ COPY . .
 RUN dotnet publish "ShopProject.Client/ShopProject.Client.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM nginx:alpine
+EXPOSE 80
+EXPOSE 443
 COPY --from=build /app/publish/wwwroot /usr/share/nginx/html

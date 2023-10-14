@@ -9,34 +9,31 @@ services:
       - 4000:1433
   
   identity-server:
-    depends_on: [ sqlserver ]
     build:
       context: ./DuendeIdentityServer/.
       dockerfile: Dockerfile
     image: vazaras/shopproject-identity-server
     container_name: shopproject-identity-server
     ports:
-      - 5001:443
-      - 5000:80
+      - 9000:80
+      - 9001:443
   
   api:
-    depends_on: [ identity-server ]
     build:
       context: ./ShopProject.Api/.
       dockerfile: Dockerfile
     image: vazaras/shopproject-api
     container_name: shopproject-api
     ports:
-      - 6001:443
-      - 6000:80
+      - 9002:80
+      - 9003:443
   
   frontend:
-    depends_on: [ api ]
     build:
       context: ./ShopProject.Client/.
       dockerfile: Dockerfile
     image: vazaras/shopproject-frontend
     container_name: shopproject-frontend
     ports:
-      - 7001:443
-      - 7000:80
+      - 9004:80
+      - 9005:443
