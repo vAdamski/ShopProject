@@ -24,6 +24,10 @@ public class SeedData
                 alice = new ApplicationUser
                 {
                     UserName = "alice",
+                    FirstName = "Alice",
+                    NormalizedFirstName = "ALICE",
+                    LastName = "Smith",
+                    NormalizedLastName = "SMITH",
                     Email = "AliceSmith@email.com",
                     EmailConfirmed = true,
                 };
@@ -58,6 +62,10 @@ public class SeedData
                 bob = new ApplicationUser
                 {
                     UserName = "bob",
+                    FirstName = "Bob",
+                    NormalizedFirstName = "BOB",
+                    LastName = "Smith",
+                    NormalizedLastName = "SMITH",
                     Email = "BobSmith@email.com",
                     EmailConfirmed = true
                 };
