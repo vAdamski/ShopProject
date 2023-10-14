@@ -6,6 +6,7 @@ COPY . .
 WORKDIR "/src/DuendeIdentityServer"
 RUN dotnet build "DuendeIdentityServer.csproj" -c Release -o /app/build
 RUN dotnet publish "DuendeIdentityServer.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet run /seed
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
