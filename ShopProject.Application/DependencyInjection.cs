@@ -9,7 +9,7 @@ public static class DependencyInjection
     {
         // DI
         // services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        // services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         
         return services;
     }
