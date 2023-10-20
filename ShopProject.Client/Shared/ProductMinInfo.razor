@@ -1,0 +1,48 @@
+@using ShopProject.Shared.Dtos
+@using Microsoft.AspNetCore.Http
+@inject IJSRuntime JsRuntime
+
+<div class="col-3">
+    <div class="card">
+        <div class="row">
+            <div class="col-6">
+                @if (Product.Image != null)
+                {
+                    <img src="@imageDataUrl" alt="Obraz" />
+                }
+                else
+                {
+                    <p>Brak obrazu</p>
+                }
+            </div>
+            <div class="col-6">
+                <div class="card-body">
+                    <h5 href="/ProductInfo/@Product.ProductId" class="card-title">@Product.ProductName</h5>
+                    <p class="card-text">@Product.ProductPrice.ToString("N2")</p>
+                    <a class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public ProductMinimumInfoDto Product { get; set; }
+
+    string imageDataUrl;
+
+    protected override void OnInitialized()
+    {
+        if (Product.Image != null)
+        {
+            var buffer = new byte[Product.Image.Length];
+            using (var stream = Product.Image.OpenReadStream())
+            {
+                stream.Read(buffer, 0, (int)Product.Image.Length);
+            }
+            imageDataUrl = $"data:{Product.Image.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        }
+    }
+}

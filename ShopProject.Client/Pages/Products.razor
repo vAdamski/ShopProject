@@ -1,0 +1,16 @@
+@page "/products"
+@using ShopProject.Shared.ViewModels
+
+<h3>Products</h3>
+
+<div class="container-fluid">
+    @foreach (var product in productsViewModel.Products)
+    {
+        <ProductMinInfo productMinInfo="@product" />
+    }
+</div>
+
+
+@code {
+    ProductsViewModel productsViewModel = new ProductsViewModel();
+}
