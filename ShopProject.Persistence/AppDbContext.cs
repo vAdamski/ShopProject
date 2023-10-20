@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Domain.Common;
+using ShopProject.Domain.Entities;
 
 namespace ShopProject.Persistence;
 
@@ -25,6 +26,11 @@ public class AppDbContext : DbContext, IAppDbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
+    
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
