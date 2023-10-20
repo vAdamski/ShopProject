@@ -14,7 +14,7 @@ public class ProductImagesConfiguration : IBaseConfiguration<ProductImage>
         builder.Property(x => x.ProductId)
             .IsRequired();
 
-        builder.Property(x => x.ImagePath)
+        builder.Property(x => x.ImageName)
             .IsRequired();
     }
 }
