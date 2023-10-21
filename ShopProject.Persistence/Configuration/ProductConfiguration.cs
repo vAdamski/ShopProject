@@ -25,6 +25,7 @@ public class ProductConfiguration : IBaseConfiguration<Product>
 
         builder.HasMany(e => e.ProductImages)
             .WithOne(e => e.Prodcut)
+            .HasForeignKey(e => e.ProductId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }
