@@ -3,6 +3,7 @@ using ShopProject.Application.Products.Queries.GetProductsPage;
 
 namespace ShopProject.Api.Controllers;
 
+[Route("api/[controller]")]
 public class ProductsController : BaseController
 {
     [HttpGet]
