@@ -1,11 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using IdentityModel;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using ShopProject.Api.Services;
 using ShopProject.Application;
+using ShopProject.Application.Common.Interfaces;
 using ShopProject.Infrastructure;
 using ShopProject.Persistence;
 
@@ -29,6 +31,9 @@ builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.TryAddScoped(typeof(ICurrentUserService), typeof(CurrentUserService));
+
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

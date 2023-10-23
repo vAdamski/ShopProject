@@ -1,0 +1,77 @@
+@page "/CategoriesManager"
+@using ShopProject.Shared.ViewModels
+@using ShopProject.Shared.Dtos
+@using ShopProject.Client.ApiBrokers
+@inject IProductCategoriesApi ProductCategoriesApi
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>List of Categories</h2>
+                        </div>
+                        <div class="card-body">
+                            @if (productCategoryListViewModel != null)
+                            {
+                                @foreach (var category in productCategoryListViewModel.ProductCategories)
+                                {
+                                    <div>
+                                        <h3>@category.CategoryName</h3>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-center">Loading...</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Create category</h2>
+                        </div>
+                        <div class="card-body">
+                            <EditForm Model="CreateProductCategory" OnSubmit="CreateCategoryAction">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Category Name</span>
+                                    <InputText id="categoryName" @bind-Value="CreateProductCategory.ProductCategoryName" class="form-control"/>
+                                </div>
+                                <input type="submit" class="btn btn-success float-right" value="Zapisz">
+                            </EditForm>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        You are not authorized!
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private ProductCategoryListViewModel productCategoryListViewModel { get; set; }
+    private CreateProductCategoryDto CreateProductCategory { get; set; } = new();
+    
+    private async Task CreateCategoryAction()
+    {
+        await ProductCategoriesApi.CreateProductCategory(CreateProductCategory);
+
+        await DownloadProductCategories();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DownloadProductCategories();
+    }
+
+    private async Task DownloadProductCategories()
+    {
+        productCategoryListViewModel = await ProductCategoriesApi.GetListProductCategories();
+    }
+}

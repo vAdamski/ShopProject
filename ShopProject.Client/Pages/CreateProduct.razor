@@ -1,0 +1,107 @@
+@page "/createproduct"
+@using ShopProject.Shared.Dtos
+
+<h3>Utwórz produkt</h3>
+
+@if (isSuccess)
+{
+    <div class="alert alert-success">
+        Produkt został pomyślnie utworzony.
+    </div>
+}
+
+@if (isError)
+{
+    <div class="alert alert-danger">
+        Wystąpił błąd podczas tworzenia produktu.
+    </div>
+}
+
+<EditForm Model="@createProductDto" OnValidSubmit="PostProduct">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label for="ProductName">Nazwa produktu</label>
+        <InputText id="ProductName" @bind-Value="createProductDto.ProductName" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+        <label for="ProductDescription">Opis produktu</label>
+        <InputText id="ProductDescription" @bind-Value="createProductDto.ProductDescription" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+        <label for="ProductPrice">Cena produktu</label>
+        <InputNumber id="ProductPrice" @bind-Value="createProductDto.ProductPrice" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+        <label for="Categories">Kategorie (oddzielone przecinkami)</label>
+        <InputText id="Categories" @bind-Value="categoryInput" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+        <label for="FileInput">Pliki</label>
+        <InputFile id="FileInput" multiple="true" OnChange="HandleFileInput"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Utwórz produkt</button>
+</EditForm>
+
+@code {
+    private CreateProductDto createProductDto = new CreateProductDto();
+    private string categoryInput = "";
+    private List<string> selectedCategories = new List<string>();
+    private List<FileData> uploadedFiles = new List<FileData>();
+    private bool isSuccess = false;
+    private bool isError = false;
+
+    private async void PostProduct()
+    {
+    // Tworzenie instancji HttpClient
+        var httpClient = new HttpClient();
+
+        var apiUrl = "https://localhost:6001/api/Products";
+
+        var formContent = new MultipartFormDataContent();
+
+        formContent.Add(new StringContent(createProductDto.ProductName), "ProductName");
+        formContent.Add(new StringContent(createProductDto.ProductDescription), "ProductDescription");
+        formContent.Add(new StringContent(createProductDto.ProductPrice.ToString()), "ProductPrice");
+
+        var categoryArray = categoryInput.Split(',').Select(x => x.Trim()).ToList();
+
+        foreach (var category in categoryArray)
+        {
+            formContent.Add(new StringContent(category), "Categories");
+        }
+
+        foreach (var fileData in uploadedFiles)
+        {
+            var fileStream = new MemoryStream(fileData.Data);
+            formContent.Add(new StreamContent(fileStream, (int)fileStream.Length), "Files", fileData.FileName);
+        }
+
+        var response = await httpClient.PostAsync(apiUrl, formContent);
+
+        if (response.IsSuccessStatusCode)
+        {
+            isSuccess = true;
+        }
+        else
+        {
+            isError = true;
+        }
+    }
+
+    private void HandleFileInput(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            var fileData = new FileData(file);
+            uploadedFiles.Add(fileData);
+        }
+    }
+
+}

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using MimeTypes;
 
@@ -26,6 +27,15 @@ public class FileData
         file.CopyTo(memoryStream);
         Data = memoryStream.ToArray();
         FileName = file.FileName;
+        ContentType = file.ContentType;
+    }
+    
+    public FileData(IBrowserFile file)
+    {
+        using var memoryStream = new MemoryStream();
+        file.OpenReadStream().CopyTo(memoryStream);
+        Data = memoryStream.ToArray();
+        FileName = file.Name;
         ContentType = file.ContentType;
     }
 
