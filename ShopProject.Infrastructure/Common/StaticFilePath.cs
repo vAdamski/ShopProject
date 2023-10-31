@@ -9,19 +9,19 @@ public class StaticFilePath : IStaticFilePath
     
     public StaticFilePath(IConfiguration configuration)
     {
-        var pathFromEnvironment = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-        if (!string.IsNullOrEmpty(pathFromEnvironment))
-        {
-            StaticFolderFilePath = pathFromEnvironment;
-            return;
-        }
-        
         var pathFromConfiguration = configuration["StaticFolderFilePath"];
 
         if (!string.IsNullOrEmpty(pathFromConfiguration))
         {
             StaticFolderFilePath = pathFromConfiguration;
+            return;
+        }
+        
+        var pathFromEnvironment = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        if (!string.IsNullOrEmpty(pathFromEnvironment))
+        {
+            StaticFolderFilePath = pathFromEnvironment;
             return;
         }
 
