@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Domain.Entities;
 using ShopProject.Shared.Dtos;
@@ -18,29 +19,33 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         _ctx = ctx;
         _productFileManagementService = productFileManagementService;
     }
-    
+
     public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        var selectedCategories = await _ctx.ProductCategories
+            .Where(x => request.CreateProductDto.Categories.Contains(x.Id.ToString()))
+            .ToListAsync(cancellationToken);
+
         var product = new Product
         {
             ProductName = request.CreateProductDto.ProductName,
             ProductDescription = request.CreateProductDto.ProductDescription,
             ProductPrice = request.CreateProductDto.ProductPrice,
-            Categories = request.CreateProductDto.Categories.Select(x => new ProductCategory { CategoryName = x }).ToList()
+            Categories = selectedCategories
         };
 
-        _ctx.Products.Add(product);
+        await _ctx.Products.AddAsync(product);
         await _ctx.SaveChangesAsync(cancellationToken);
-        
+
         var productImages = await SaveImages(request.CreateProductDto.Files, product.Id);
-        
+
         await _ctx.ProductImages.AddRangeAsync(productImages, cancellationToken);
-        
+
         await _ctx.SaveChangesAsync(cancellationToken);
-        
+
         return product.Id;
     }
-    
+
     private async Task<List<ProductImage>> SaveImages(List<IFormFile> files, Guid productId)
     {
         var images = new List<ProductImage>();
@@ -48,7 +53,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         foreach (var file in files)
         {
             var filePath = await SaveFile(file, productId);
-            
+
             if (!string.IsNullOrEmpty(filePath))
             {
                 var image = new ProductImage
@@ -56,18 +61,18 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                     ImagePath = filePath,
                     ProductId = productId
                 };
-                
+
                 images.Add(image);
             }
         }
-        
+
         return images;
     }
 
     private async Task<string> SaveFile(IFormFile file, Guid productId)
     {
         string filePath = string.Empty;
-        
+
         try
         {
             filePath = await _productFileManagementService.SaveFile(new FileData(file), productId);
