@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Domain.Entities;
 using ShopProject.Shared.Dtos;
@@ -40,7 +41,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         return product.Id;
     }
     
-    private async Task<List<ProductImage>> SaveImages(List<ProductFileDto> files, Guid productId)
+    private async Task<List<ProductImage>> SaveImages(List<IFormFile> files, Guid productId)
     {
         var images = new List<ProductImage>();
 
@@ -63,13 +64,13 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         return images;
     }
 
-    private async Task<string> SaveFile(ProductFileDto file, Guid productId)
+    private async Task<string> SaveFile(IFormFile file, Guid productId)
     {
         string filePath = string.Empty;
         
         try
         {
-            filePath = await _productFileManagementService.SaveFile(file.File, productId);
+            filePath = await _productFileManagementService.SaveFile(new FileData(file), productId);
         }
         catch (Exception e)
         {

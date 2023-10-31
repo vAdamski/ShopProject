@@ -1,107 +1,103 @@
 @page "/createproduct"
 @using ShopProject.Shared.Dtos
+@using ShopProject.Shared.ViewModels
+@using ShopProject.Client.ApiBrokers
+@using System.Text.Json
+@using System.Text
+@using System.Net.Http.Headers
+@inject IProductCategoriesApi ProductCategoriesApi
+@inject IProductApi ProductApi
+@inject HttpClient Http
 
-<h3>Utwórz produkt</h3>
 
-@if (isSuccess)
-{
-    <div class="alert alert-success">
-        Produkt został pomyślnie utworzony.
+<div class="container">
+    <h3>Utwórz produkt</h3>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <EditForm Model="@CreateDto" OnSubmit="CreateProductOnSubmit">
+                        <div class="input-group mb-3">
+                            <span for="productName" class="input-group-text">Nazwa produktu</span>
+                            <InputText id="productName" @bind-Value="CreateDto.ProductName" class="form-control"/>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span for="productDescription" class="input-group-text">Opis produktu</span>
+                            <InputText id="productDescription" @bind-Value="CreateDto.ProductDescription" class="form-control"/>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span for="productPrice" class="input-group-text">Cena produktu</span>
+                            <InputNumber id="productPrice" @bind-Value="CreateDto.ProductPrice" class="form-control"/>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span for="categories" class="input-group-text">Kategorie</span>
+                            <select id="categories" class="form-select" @bind="SelectedCategories" multiple>
+                                @foreach (var category in ProductCategoryListViewModel.ProductCategories)
+                                {
+                                    <option value="@category.Id">@category.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" for="FileInput">Pliki</span>
+                            <InputFile id="FileInput" class="form-control" multiple OnChange="HandleFileInput"/>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mb-2">Utwórz produkt</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
     </div>
-}
-
-@if (isError)
-{
-    <div class="alert alert-danger">
-        Wystąpił błąd podczas tworzenia produktu.
-    </div>
-}
-
-<EditForm Model="@createProductDto" OnValidSubmit="PostProduct">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
-
-    <div class="form-group">
-        <label for="ProductName">Nazwa produktu</label>
-        <InputText id="ProductName" @bind-Value="createProductDto.ProductName" class="form-control"/>
-    </div>
-
-    <div class="form-group">
-        <label for="ProductDescription">Opis produktu</label>
-        <InputText id="ProductDescription" @bind-Value="createProductDto.ProductDescription" class="form-control"/>
-    </div>
-
-    <div class="form-group">
-        <label for="ProductPrice">Cena produktu</label>
-        <InputNumber id="ProductPrice" @bind-Value="createProductDto.ProductPrice" class="form-control"/>
-    </div>
-
-    <div class="form-group">
-        <label for="Categories">Kategorie (oddzielone przecinkami)</label>
-        <InputText id="Categories" @bind-Value="categoryInput" class="form-control"/>
-    </div>
-
-    <div class="form-group">
-        <label for="FileInput">Pliki</label>
-        <InputFile id="FileInput" multiple="true" OnChange="HandleFileInput"/>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Utwórz produkt</button>
-</EditForm>
+</div>
 
 @code {
-    private CreateProductDto createProductDto = new CreateProductDto();
-    private string categoryInput = "";
-    private List<string> selectedCategories = new List<string>();
-    private List<FileData> uploadedFiles = new List<FileData>();
-    private bool isSuccess = false;
-    private bool isError = false;
+    private string[] SelectedCategories { get; set; } = { };
+    private CreateProductDto CreateDto = new ();
+    private ProductCategoryListViewModel ProductCategoryListViewModel { get; set; } = new();
+    private IReadOnlyList<IBrowserFile> files;
 
-    private async void PostProduct()
+    protected override async Task OnInitializedAsync()
     {
-    // Tworzenie instancji HttpClient
-        var httpClient = new HttpClient();
-
-        var apiUrl = "https://localhost:6001/api/Products";
-
-        var formContent = new MultipartFormDataContent();
-
-        formContent.Add(new StringContent(createProductDto.ProductName), "ProductName");
-        formContent.Add(new StringContent(createProductDto.ProductDescription), "ProductDescription");
-        formContent.Add(new StringContent(createProductDto.ProductPrice.ToString()), "ProductPrice");
-
-        var categoryArray = categoryInput.Split(',').Select(x => x.Trim()).ToList();
-
-        foreach (var category in categoryArray)
-        {
-            formContent.Add(new StringContent(category), "Categories");
-        }
-
-        foreach (var fileData in uploadedFiles)
-        {
-            var fileStream = new MemoryStream(fileData.Data);
-            formContent.Add(new StreamContent(fileStream, (int)fileStream.Length), "Files", fileData.FileName);
-        }
-
-        var response = await httpClient.PostAsync(apiUrl, formContent);
-
-        if (response.IsSuccessStatusCode)
-        {
-            isSuccess = true;
-        }
-        else
-        {
-            isError = true;
-        }
+        ProductCategoryListViewModel = await ProductCategoriesApi.GetListProductCategories();
     }
 
     private void HandleFileInput(InputFileChangeEventArgs e)
     {
-        foreach (var file in e.GetMultipleFiles())
-        {
-            var fileData = new FileData(file);
-            uploadedFiles.Add(fileData);
-        }
+        files = e.GetMultipleFiles();
     }
 
+    private async void CreateProductOnSubmit()
+    {
+        var content = new MultipartFormDataContent()
+        {
+            { new StringContent(CreateDto.ProductName), "ProductName" },
+            { new StringContent(CreateDto.ProductDescription), "ProductDescription" },
+            { new StringContent(CreateDto.ProductPrice.ToString()), "ProductPrice" },
+        };
+
+        foreach (var selectedCategory in SelectedCategories)
+        {
+            content.Add(new StringContent(selectedCategory), "Categories");
+        }
+        
+        foreach (var file in files)
+        {
+            StreamContent fileContent = new StreamContent(file.OpenReadStream());
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"Files\"",
+                FileName = $"\"{file.Name}\""
+            };
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+            content.Add(fileContent);
+        }
+
+        await ProductApi.CreateProduct(content);
+    }
 }

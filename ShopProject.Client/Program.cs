@@ -9,6 +9,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient<IProductCategoriesApi, ProductCategoriesApi>();
+builder.Services.AddTransient<IProductApi, ProductApi>();
 
 builder.Services.AddHttpClient("ServerAPI.NoAuthenticationClient",
     client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));

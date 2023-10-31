@@ -6,8 +6,7 @@ using ShopProject.Shared.Dtos;
 
 namespace ShopProject.Api.Controllers;
 
-[Route("api/[controller]")]
-[AllowAnonymous]
+[Route("api/products")]
 public class ProductsController : BaseController
 {
     [HttpGet]
@@ -18,6 +17,7 @@ public class ProductsController : BaseController
     }
     
     [HttpPost]
+    [Route("create-product")]
     public async Task<IActionResult> CreateProduct([FromForm]CreateProductDto dto)
     {
         var result = await Mediator.Send(new CreateProductCommand { CreateProductDto = dto });

@@ -12,8 +12,8 @@ public class ProductCategoriesApi : ApiBroker, IProductCategoriesApi
     private const string ProductCategoryRelativeUrl = "https://localhost:6001/api/product-categories";
 
     public async Task CreateProductCategory(CreateProductCategoryDto createProductCategoryDto) =>
-         await PostAsync(ProductCategoryRelativeUrl, createProductCategoryDto);
+         await PostAsJsonAsync(ProductCategoryRelativeUrl, createProductCategoryDto);
 
     public async Task<ProductCategoryListViewModel> GetListProductCategories() =>
-        await GetAsync<ProductCategoryListViewModel>($"{ProductCategoryRelativeUrl}/all");
+        await GetFromJsonAsync<ProductCategoryListViewModel>($"{ProductCategoryRelativeUrl}/all");
 }

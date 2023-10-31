@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace ShopProject.Shared.Dtos;
 
 public class CreateProductDto
@@ -6,5 +8,5 @@ public class CreateProductDto
     public string ProductDescription { get; set; }
     public decimal ProductPrice { get; set; }
     public List<string> Categories { get; set; } = new();
-    public List<ProductFileDto> Files { get; set; } = new();
+    public List<IFormFile> Files { get; set; } = new();
 }

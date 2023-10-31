@@ -1,0 +1,20 @@
+@inherits ComponentBase
+@using ShopProject.Shared.Dtos
+
+<div>
+    <InputSelect @bind-Value="CategoryToChange">
+        @foreach (var category in AvailableCategories)
+        {
+            <option value="@category.Id">@category.CategoryName</option>
+        }
+    </InputSelect>
+</div>
+
+@code {
+    private string SelectedCategory { get; set; } = "";
+    
+    [Parameter]
+    public List<ProductCategoryDto> AvailableCategories { get; set; } = new();
+    [Parameter]
+    public string CategoryToChange { get; set; }
+}
