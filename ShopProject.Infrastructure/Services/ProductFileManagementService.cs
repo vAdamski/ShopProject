@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Shared.Dtos;
@@ -14,6 +15,22 @@ public class ProductFileManagementService : IProductFileManagementService
     {
         _staticFilesService = staticFilesService;
         _logger = logger;
+    }
+
+    public string GetProductImagePath(string path)
+    {
+        var fileFullPath = string.Empty;
+        
+        try
+        {
+            fileFullPath = _staticFilesService.GetFilePath(path);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting file");
+        }
+        
+        return fileFullPath;
     }
 
     public async Task<string> SaveFile(FileData fileData, Guid productId)

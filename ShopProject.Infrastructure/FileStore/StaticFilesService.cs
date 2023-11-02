@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Infrastructure.Common;
@@ -27,9 +28,24 @@ public class StaticFilesService : IStaticFilesService
     {
         try
         {
-            var fullPath = Path.Combine(_staticFilePath.StaticFolderFilePath, path);
+            var fullPath = GetFilePath(path);
         
             return await _discFileDownloadService.GetFileAsync(fullPath);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting file");
+            throw;
+        }
+    }
+    
+    public string GetFilePath(string path)
+    {
+        try
+        {
+            var fullPath = Path.Combine(_staticFilePath.StaticFolderFilePath, path);
+        
+            return fullPath;
         }
         catch (Exception e)
         {
