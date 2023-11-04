@@ -7,39 +7,46 @@
 @inject IProductCategoriesApi ProductCategoriesApi
 @inject IProductApi ProductApi
 
-<EditForm Model="@CreateDto" OnSubmit="CreateProductOnSubmit">
-    <div class="input-group mb-3">
-        <span for="productName" class="input-group-text">Nazwa produktu</span>
-        <InputText id="productName" @bind-Value="CreateDto.ProductName" class="form-control"/>
+<div class="card">
+    <div class="card-header text-center">
+        Dodaj produkt
     </div>
+    <div class="card-body">
+        <EditForm Model="@CreateDto" OnSubmit="CreateProductOnSubmit">
+            <div class="input-group mb-3">
+                <span for="productName" class="input-group-text">Nazwa produktu</span>
+                <InputText id="productName" @bind-Value="CreateDto.ProductName" class="form-control"/>
+            </div>
 
-    <div class="input-group mb-3">
-        <span for="productDescription" class="input-group-text">Opis produktu</span>
-        <InputText id="productDescription" @bind-Value="CreateDto.ProductDescription" class="form-control"/>
+            <div class="input-group mb-3">
+                <span for="productDescription" class="input-group-text">Opis produktu</span>
+                <InputText id="productDescription" @bind-Value="CreateDto.ProductDescription" class="form-control"/>
+            </div>
+
+            <div class="input-group mb-3">
+                <span for="productPrice" class="input-group-text">Cena produktu</span>
+                <InputNumber id="productPrice" @bind-Value="CreateDto.ProductPrice" class="form-control"/>
+            </div>
+
+            <div class="input-group mb-3">
+                <span for="categories" class="input-group-text">Kategorie</span>
+                <select id="categories" class="form-select" @bind="SelectedCategories" multiple>
+                    @foreach (var category in ProductCategoryListViewModel.ProductCategories)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" for="FileInput">Pliki</span>
+                <InputFile id="FileInput" class="form-control" multiple OnChange="HandleFileInput"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2">Utwórz produkt</button>
+        </EditForm>
     </div>
-
-    <div class="input-group mb-3">
-        <span for="productPrice" class="input-group-text">Cena produktu</span>
-        <InputNumber id="productPrice" @bind-Value="CreateDto.ProductPrice" class="form-control"/>
-    </div>
-
-    <div class="input-group mb-3">
-        <span for="categories" class="input-group-text">Kategorie</span>
-        <select id="categories" class="form-select" @bind="SelectedCategories" multiple>
-            @foreach (var category in ProductCategoryListViewModel.ProductCategories)
-            {
-                <option value="@category.Id">@category.CategoryName</option>
-            }
-        </select>
-    </div>
-
-    <div class="input-group mb-3">
-        <span class="input-group-text" for="FileInput">Pliki</span>
-        <InputFile id="FileInput" class="form-control" multiple OnChange="HandleFileInput"/>
-    </div>
-
-    <button type="submit" class="btn btn-primary mb-2">Utwórz produkt</button>
-</EditForm>
+</div>
 
 @code {
     private string[] SelectedCategories { get; set; } = { };

@@ -1,8 +1,5 @@
-using System.Net.Mime;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Domain.Entities;
 using ShopProject.Shared.Dtos;
@@ -14,13 +11,10 @@ namespace ShopProject.Application.Products.Queries.GetEditableProductList;
 public class GetEditableProductListQueryHandler : IRequestHandler<GetEditableProductListQuery, EditableProductsListViewModel>
 {
     private readonly IAppDbContext _context;
-    private readonly IProductFileManagementService _productFileManagementService;
 
-    public GetEditableProductListQueryHandler(IAppDbContext context,
-        IProductFileManagementService productFileManagementService)
+    public GetEditableProductListQueryHandler(IAppDbContext context)
     {
         _context = context;
-        _productFileManagementService = productFileManagementService;
     }
 
     public async Task<EditableProductsListViewModel> Handle(GetEditableProductListQuery request,
@@ -76,13 +70,10 @@ public class GetEditableProductListQueryHandler : IRequestHandler<GetEditablePro
         var images = new List<ProductImageDto>();
         foreach (var productImage in productImages)
         {
-            var productImagePath = _productFileManagementService.GetProductImagePath(productImage.ImagePath);
-
             images.Add(new ProductImageDto
             {
                 Id = productImage.Id,
                 IsMain = productImage.IsMain,
-                ImagePath = productImagePath
             });
         }
 

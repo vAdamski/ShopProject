@@ -4,7 +4,6 @@ using ShopProject.Application.Categories.Commands.CreateCategory;
 using ShopProject.Application.ProductCategories.Queries.GetListProductCategories;
 using ShopProject.Application.Products.Commands.CreateProduct;
 using ShopProject.Shared.Dtos;
-
 namespace ShopProject.Api.Controllers;
 
 [Route("api/product-categories")]
