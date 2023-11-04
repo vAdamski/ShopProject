@@ -2,19 +2,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopProject.Application.Common.Interfaces;
+using ShopProject.Application.Files.Queries.GetImage;
 
 namespace ShopProject.Api.Controllers;
 
 [Route("api/files")]
 public class FileController : BaseController
 {
-    private readonly IProductFileManagementService _productFileManagementService;
-    private readonly IAppDbContext _ctx;
+    private readonly ILogger<FileController> _logger;
 
-    public FileController(IProductFileManagementService productFileManagementService, IAppDbContext ctx)
+    public FileController(ILogger<FileController> logger)
     {
-        _productFileManagementService = productFileManagementService;
-        _ctx = ctx;
+        _logger = logger;
     }
     
     [HttpGet]
@@ -22,20 +21,17 @@ public class FileController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> GetFile(string fileId)
     {
-        var fileInfo = await _ctx.ProductImages.FirstOrDefaultAsync(x => x.Id == Guid.Parse(fileId));
-        
-        if (fileInfo == null)
+        try
         {
-            return NotFound();
+            var file = await Mediator.Send(new GetImageQuery(fileId));
+        
+            return File(file.Data, file.ContentType, file.FileName);
         }
-        
-        var file = await _productFileManagementService.GetFile(fileInfo.ImagePath);
-        
-        if (file == null)
+        catch (Exception e)
         {
-            return NotFound();
+            _logger.LogError(e, "Error while getting file");
         }
-        
-        return File(file.Data, file.ContentType, file.FileName);
+
+        return NotFound();
     }
 }
