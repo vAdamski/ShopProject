@@ -1,4 +1,5 @@
 using ShopProject.Shared.Dtos;
+using ShopProject.Shared.Dtos.Products;
 using ShopProject.Shared.ViewModels;
 
 namespace ShopProject.Client.ApiBrokers;
@@ -11,6 +12,9 @@ public class ProductApi : ApiBroker, IProductApi
 
     private const string ProductRelativeUrl = "https://localhost:6001/api/products";
 
+    public async Task<EditableProductDto> GetEditableProductDto(string productId) =>
+        await  GetFromJsonAsync<EditableProductDto>($"{ProductRelativeUrl}/get-editable-product/{productId}");
+
     public async Task CreateProduct(MultipartFormDataContent multipartFormDataContent) =>
         await PostAsync<MultipartFormDataContent>($"{ProductRelativeUrl}/create-product", multipartFormDataContent);
     
@@ -20,6 +24,7 @@ public class ProductApi : ApiBroker, IProductApi
 
 public interface IProductApi
 {
+    Task<EditableProductDto> GetEditableProductDto(string productId);
     Task CreateProduct(MultipartFormDataContent multipartFormDataContent);
     Task<EditableProductsListViewModel> GetEditableProducts();
 }
