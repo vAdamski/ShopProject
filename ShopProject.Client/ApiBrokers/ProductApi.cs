@@ -12,6 +12,15 @@ public class ProductApi : ApiBroker, IProductApi
 
     private const string ProductRelativeUrl = "https://localhost:6001/api/products";
 
+    public async Task DeleteImageFromProduct(string productId, string imageId) =>
+        DeleteAsync($"{ProductRelativeUrl}/delete-image/{productId}/{imageId}");
+
+    public async Task AddImageToProduct(MultipartFormDataContent multipartFormDataContent) =>
+        await PostAsync<MultipartFormDataContent>($"{ProductRelativeUrl}/add-image", multipartFormDataContent);
+
+    public async Task EditProduct(MultipartFormDataContent multipartFormDataContent) =>
+        await PostAsync<MultipartFormDataContent>($"{ProductRelativeUrl}/edit-product", multipartFormDataContent);
+
     public async Task<EditableProductDto> GetEditableProductDto(string productId) =>
         await  GetFromJsonAsync<EditableProductDto>($"{ProductRelativeUrl}/get-editable-product/{productId}");
 
@@ -24,6 +33,9 @@ public class ProductApi : ApiBroker, IProductApi
 
 public interface IProductApi
 {
+    Task DeleteImageFromProduct(string productId, string imageId);
+    Task AddImageToProduct(MultipartFormDataContent multipartFormDataContent);
+    Task EditProduct(MultipartFormDataContent multipartFormDataContent);
     Task<EditableProductDto> GetEditableProductDto(string productId);
     Task CreateProduct(MultipartFormDataContent multipartFormDataContent);
     Task<EditableProductsListViewModel> GetEditableProducts();

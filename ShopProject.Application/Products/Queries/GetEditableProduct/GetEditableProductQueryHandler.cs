@@ -21,7 +21,8 @@ public class GetEditableProductQueryHandler : IRequestHandler<GetEditableProduct
         var product = await _ctx.Products
             .Include(x => x.Categories)
             .Include(x => x.ProductImages)
-            .Where(x => x.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
+            .Where(x => x.Id == request.Id && x.StatusId == 1)
+            .FirstOrDefaultAsync(cancellationToken);
 
         return BuildProductCategoryDto(product);
     }
@@ -39,7 +40,9 @@ public class GetEditableProductQueryHandler : IRequestHandler<GetEditableProduct
             Id = x.Id,
             CategoryName = x.CategoryName
         }).ToList();
-        productDto.Images = product.ProductImages.Select(x => new ProductImageDto
+        productDto.Images = product.ProductImages
+            .Where(x => x.StatusId == 1)
+            .Select(x => new ProductImageDto
         {
             Id = x.Id,
             IsMain = x.IsMain

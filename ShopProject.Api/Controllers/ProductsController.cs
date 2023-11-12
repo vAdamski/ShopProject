@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShopProject.Application.Products.Commands.AddImageToProduct;
 using ShopProject.Application.Products.Commands.CreateProduct;
+using ShopProject.Application.Products.Commands.DeleteImageInProduct;
+using ShopProject.Application.Products.Commands.EditProduct;
 using ShopProject.Application.Products.Queries.GetEditableProduct;
 using ShopProject.Application.Products.Queries.GetEditableProductList;
 using ShopProject.Application.Products.Queries.GetProductsPage;
 using ShopProject.Shared.Dtos;
+using ShopProject.Shared.Dtos.Products;
 
 namespace ShopProject.Api.Controllers;
 
@@ -59,5 +63,32 @@ public class ProductsController : BaseController
         var result = await Mediator.Send(new CreateProductCommand { CreateProductDto = dto });
         
         return Ok(result);
+    }
+    
+    [HttpPost]
+    [Route("edit-product")]
+    public async Task<IActionResult> EditProduct([FromForm]EditProductDtoHandler dto)
+    {
+        var result = await Mediator.Send(new EditProductCommand { EditProductDtoHandler = dto });
+        
+        return Ok(result);
+    }
+    
+    [HttpPost]
+    [Route("add-image")]
+    public async Task<IActionResult> AddImageToProduct([FromForm]AddImageToProductHandler image)
+    {
+        var result = await Mediator.Send(new AddImageToProductCommand { AddImageToProductHandler = image });
+        
+        return Ok();
+    }
+    
+    [HttpDelete]
+    [Route("delete-image/{productId}/{imageId}")]
+    public async Task<IActionResult> DeleteImageInProduct(string productId, string imageId)
+    {
+        await Mediator.Send(new DeleteImageInProductCommand { ProductId = Guid.Parse(productId), ImageId = Guid.Parse(imageId) });
+        
+        return NoContent();
     }
 }

@@ -9,5 +9,6 @@ public class EditableProductDto
     public string ProductDescription { get; set; }
     public decimal ProductPrice { get; set; }
     public List<ProductCategoryDto> Categories { get; set; } = new();
+    public List<string> SelectedCategories { get; set; } = new();
     public List<ProductImageDto> Images { get; set; } = new();
 }

@@ -22,6 +22,9 @@ public class ApiBroker : IApiBroker
 
     protected async Task DeleteAsync(string relativeUrl, int id) =>
         await _httpClient.DeleteAsync($"{relativeUrl}/{id}");
+    
+    protected async Task DeleteAsync(string relativeUrl) =>
+        await _httpClient.DeleteAsync($"{relativeUrl}");
 
     protected async Task PutAsJsonAsync<T>(string relativeUrl, T content) =>
         await _httpClient.PutAsJsonAsync(relativeUrl, content);

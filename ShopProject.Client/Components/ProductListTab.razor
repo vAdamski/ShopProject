@@ -1,10 +1,12 @@
-@using ShopProject.Client.ApiBrokers
-@using ShopProject.Shared.ViewModels
 @inherits ComponentBase
+@using ShopProject.Client.ApiBrokers
+@using ShopProject.Shared.Dtos.Products
+@using ShopProject.Shared.ViewModels
 @inject IProductApi ProductApi
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient HttpClient
 @inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject NavigationManager NavigationManager;
 
 
 <div class="card">
@@ -22,12 +24,15 @@
                                 <div class="col-3">
                                     <img src="https://localhost:6001/api/files/@product.Images.FirstOrDefault().Id" style="max-height: 100px"/>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-3">
                                     <h4>@product.ProductName</h4>
                                     <p>@product.ProductDescription</p>
                                 </div>
                                 <div class="col-3">
                                     <h2>@product.ProductPrice</h2>
+                                </div>
+                                <div class="col-3">
+                                    <button class="btn btn-primary" @onclick="() => RedirectToEditProduct(product.ProductId)">Edytuj</button>
                                 </div>
                             </div>
                         </div>
@@ -45,5 +50,10 @@
     protected override async Task OnInitializedAsync()
     {
         ViewModel = await ProductApi.GetEditableProducts();
+    }
+    
+    private void RedirectToEditProduct(Guid productId)
+    {
+        NavigationManager.NavigateTo($"/editproduct/{productId}");
     }
 }
