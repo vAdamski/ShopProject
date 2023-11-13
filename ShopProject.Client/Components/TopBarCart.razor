@@ -1,0 +1,32 @@
+@implements IDisposable
+@inherits ComponentBase
+@using ShopProject.Shared.Dtos
+@using ShopProject.Client.Services
+@inject ISyncLocalStorageService LocalStorage
+@inject ICartService CartService
+
+<a href="cart" class="btn btn-info">
+    <i class="oi oi-cart"></i>
+    Cart
+    <span class="badge badge-light">@GetProductsCount()</span>
+</a>
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        CartService.OnChange += StateHasChanged;
+    }
+    
+    public void Dispose()
+    {
+        CartService.OnChange -= StateHasChanged;
+    }
+
+    private int GetProductsCount()
+    {
+        var cart = LocalStorage.GetItem<List<ProductMinimumInfoDto>>("cart");
+        return cart?.Count ?? 0;
+    }
+}

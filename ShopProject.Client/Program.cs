@@ -1,8 +1,10 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ShopProject.Client;
 using ShopProject.Client.ApiBrokers;
+using ShopProject.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -10,6 +12,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient<IProductCategoriesApi, ProductCategoriesApi>();
 builder.Services.AddTransient<IProductApi, ProductApi>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddHttpClient("ServerAPI.NoAuthenticationClient",
     client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));

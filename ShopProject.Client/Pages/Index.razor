@@ -1,7 +1,10 @@
 ﻿@page "/"
 @using ShopProject.Shared.ViewModels
+@using ShopProject.Shared.Dtos
+@using ShopProject.Client.Services
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient HttpClient
+@inject ICartService CartService
 
 <style>
     .product{
@@ -53,7 +56,7 @@
                                     <div class="col-3">
                                         <div class="text-center">
                                             <h2>@product.ProductPrice.ToString()</h2>
-                                            <button class="btn btn-success">Dodaj do koszyka</button>
+                                            <button class="btn btn-success" @onclick="async () => await AddToCart(product)">Dodaj do koszyka</button>
                                         </div>
                                     </div>
                                 </div>
@@ -87,4 +90,9 @@
     }
     
     private string CurrentPageClass(int pageNo) => Vm.CurrentPageNo == pageNo ? "btn-primary" : "btn-outline-secondary";
+
+    private async Task AddToCart(ProductMinimumInfoDto productMinimumInfoDto)
+    {
+        await CartService.AddToCart(productMinimumInfoDto);
+    }
 }
