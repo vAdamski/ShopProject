@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShopProject.Application.Common.Interfaces;
+using ShopProject.Domain.Entities;
 using ShopProject.Shared.Dtos;
 using ShopProject.Shared.ViewModels;
 
@@ -37,10 +38,20 @@ public class GetProductsPageQueryHandler : IRequestHandler<GetProductsPageQuery,
                 ProductName = x.ProductName,
                 ProductPrice = x.ProductPrice,
                 Categories = x.Categories.Select(x => x.CategoryName).ToList(),
-                Image = null
+                ImageId = GetMainImageOrDefault(x).ToString()
             }).ToList()
         };
 
         return productsViewModel;
+    }
+    
+    private Guid GetMainImageOrDefault(Product product)
+    {
+        if (!product.ProductImages.Any())
+        {
+            return Guid.Empty;
+        }
+
+        return product.ProductImages.FirstOrDefault(x => x.IsMain)?.Id ?? product.ProductImages.First().Id;
     }
 }

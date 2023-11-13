@@ -25,6 +25,7 @@ public class ProductsController : BaseController
     [HttpGet]
     [AllowAnonymous]
     [Route("get-products")]
+    [Route("get-products/{pageNo}/{pageSize}")]
     public async Task<IActionResult> GetProducts(int pageNo = 1, int pageSize = 10)
     {
         var result = await Mediator.Send(new GetProductsPageQuery(pageNo, pageSize));
