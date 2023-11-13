@@ -80,7 +80,7 @@
 
         foreach (var file in files)
         {
-            StreamContent fileContent = new StreamContent(file.OpenReadStream());
+            StreamContent fileContent = new StreamContent(file.OpenReadStream(file.Size));
             fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
                 Name = "\"Files\"",
