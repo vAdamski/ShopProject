@@ -3,6 +3,26 @@
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient HttpClient
 
+<style>
+    .product{
+        padding: 5px;
+    }
+
+    .product:hover {
+        border: 1px solid grey;
+        border-radius: 5px;
+        -webkit-box-shadow: 0px 0px 21px -7px rgba(66, 68, 90, 1);
+        -moz-box-shadow: 0px 0px 21px -7px rgba(66, 68, 90, 1);
+        box-shadow: 0px 0px 21px -7px rgba(66, 68, 90, 1);
+    }
+    
+    img {
+        border-radius: 8px;
+        max-height: 100px;
+        max-width: 100px;
+    }
+</style>
+
 
 <div class="container-fluid">
     <div class="row">
@@ -18,20 +38,20 @@
         </div>
         <div class="col-9">
             <div class="container-fluid">
-                <div class="row">
+                <div class="row mb-2">
                     @foreach (var product in Vm.Products)
                     {
-                        <div class="col-12" href="~/product-info/@product.ProductId">
+                        <div class="col-12 mb-5 product" href="~/product-info/@product.ProductId">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-3">
-                                        <img src="https://localhost:6001/api/files/@product.ImageId" style="max-height: 100px"/>
+                                    <div class="col-3 text-center">
+                                        <img src="https://localhost:6001/api/files/@product.ImageId"/>
                                     </div>
                                     <div class="col-6">
                                         <h4>@product.ProductName</h4>
                                     </div>
                                     <div class="col-3">
-                                        <div>
+                                        <div class="text-center">
                                             <h2>@product.ProductPrice.ToString()</h2>
                                             <button class="btn btn-success">Dodaj do koszyka</button>
                                         </div>
@@ -41,7 +61,7 @@
                         </div>
                     }
                 </div>
-                <div class="row">
+                <div class="row mb-2">
                     <div class="btn-toolbar mb-3" role="toolbar">
                         <div class="btn-group me-2" role="group">
                             @for(int i = 1; i <= Vm.MaxPageNo; i++)
