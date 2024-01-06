@@ -10,25 +10,7 @@ public class OrderConfiguration : IBaseConfiguration<Order>
     {
         builder.HasKey(e => e.Id);
         
-        builder.Property(e => e.IsPaid)
-            .IsRequired();
-        
         builder.Property(e => e.OrderState)
-            .IsRequired();
-        
-        builder.Property(e => e.Country)
-            .IsRequired();
-        
-        builder.Property(e => e.City)
-            .IsRequired();
-        
-        builder.Property(e => e.PostCode)
-            .IsRequired();
-        
-        builder.Property(e => e.Street)
-            .IsRequired();
-        
-        builder.Property(e => e.PhoneNumber)
             .IsRequired();
         
         builder.Property(e => e.UserEmail)

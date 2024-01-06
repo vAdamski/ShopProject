@@ -1,0 +1,110 @@
+@page "/Cart"
+@using ShopProject.Client.Services
+@using ShopProject.Shared.Dtos
+@using ShopProject.Shared.ViewModels
+@using ShopProject.Client.ApiBrokers
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ICartService CartService
+@inject IPaymentBroker PaymentBroker
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container-fluid">
+                        @foreach (var product in Products)
+                        {
+                            <div class="row mb-3 text-center">
+                                <div class="col-md-2">
+                                    <img src="https://localhost:6001/api/files/@product.ImageId" style="max-height: 100px"/>
+                                </div>
+                                <div class="col-md-4">
+                                    <h4>@product.ProductName</h4>
+                                </div>
+                                <div class="col-md-4">
+                                    <h4>@product.ProductPrice</h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-danger" @onclick="() => RemoveFromCart(product.ProductId)">Usuń z koszyka</button>
+                                </div>
+                            </div>
+                        }
+                        <div class="row mb-3 text-center">
+                            <div class="col-4">
+
+                            </div>
+                            <div class="col-2">
+                                <h4>Suma:</h4>
+                            </div>
+                            <div class="col-4">
+                                <h4>@Products.Sum(x => x.ProductPrice)</h4>
+                            </div>
+                            <div class="col-2">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Szczegóły dostawy</h2>
+                </div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Email</span>
+                        <InputText type="email" class="form-control" @bind-Value="Email"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12 text-center">
+            <a class="btn btn-success" @onclick="Pay">Zapłać</a>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public string Email { get; set; } = string.Empty;
+
+    public List<ProductMinimumInfoDto> Products { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await CartService.GetProductsFromInCart();
+    }
+
+    private async Task RemoveFromCart(Guid productId)
+    {
+        await CartService.RemoveFromCart(productId);
+        Products = await CartService.GetProductsFromInCart();
+    }
+
+    public async Task Pay()
+    {
+        var vm = new CartPaymentVm();
+        vm.Email = Email;
+        vm.Items = Products.Select(x => new CartItemDto()
+        {
+            Id = x.ProductId,
+            Quantity = 1
+        })
+            .ToList();
+        
+        var responseUrl = await PaymentBroker.PostPaymentAsync(vm);
+        
+        if (!string.IsNullOrEmpty(responseUrl))
+        {
+            NavigationManager.NavigateTo(responseUrl);
+        }
+    }
+}

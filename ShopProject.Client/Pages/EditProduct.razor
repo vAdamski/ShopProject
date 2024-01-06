@@ -7,82 +7,90 @@
 @inject IProductApi ProductsApi
 @inject NavigationManager NavigationManager
 
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header text-center">
-                    Edytuj produkt
-                </div>
-                <div class="card-body">
-                    <EditForm Model="@ProductDto" Context="formContext">
-                        <div class="input-group mb-3">
-                            <span for="productName" class="input-group-text">Nazwa produktu</span>
-                            <InputText id="productName" @bind-Value="ProductDto.ProductName" class="form-control"/>
+<AuthorizeView>
+    <Authorized>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            Edytuj produkt
                         </div>
-
-                        <div class="input-group mb-3">
-                            <span for="productDescription" class="input-group-text">Opis produktu</span>
-                            <InputText id="productDescription" @bind-Value="ProductDto.ProductDescription" class="form-control"/>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span for="productPrice" class="input-group-text">Cena produktu</span>
-                            <InputNumber id="productPrice" @bind-Value="ProductDto.ProductPrice" class="form-control"/>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span for="categories" class="input-group-text">Kategorie</span>
-                            <select id="categories" class="form-select" @bind="SelectedCategories" multiple>
-                                @foreach (var category in ProductCategoryListViewModel.ProductCategories)
-                                {
-                                    <option
-                                        value="@category.Id" selected="@category.IsSelected">
-                                        @category.CategoryName
-                                    </option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            @foreach (var productImage in ProductDto.Images)
-                            {
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-3">
-                                                    <img src="https://localhost:6001/api/files/@productImage.Id" style="max-height: 50px">
-                                                </div>
-                                                <div class="col"></div>
-                                                <div class="col-1">
-                                                    <InputCheckbox @bind-Value="productImage.IsMain" @onclick="() => SetMainImage(productImage.Id)"/>
-                                                </div>
-                                                <div class="col-1">
-                                                    <button class="btn btn-danger" @onclick="() => DeleteProductImage(productImage.Id)">Usuń</button>
+                        <div class="card-body">
+                            <EditForm Model="@ProductDto" Context="formContext">
+                                <div class="input-group mb-3">
+                                    <span for="productName" class="input-group-text">Nazwa produktu</span>
+                                    <InputText id="productName" @bind-Value="ProductDto.ProductName" class="form-control"/>
+                                </div>
+        
+                                <div class="input-group mb-3">
+                                    <span for="productDescription" class="input-group-text">Opis produktu</span>
+                                    <InputText id="productDescription" @bind-Value="ProductDto.ProductDescription" class="form-control"/>
+                                </div>
+        
+                                <div class="input-group mb-3">
+                                    <span for="productPrice" class="input-group-text">Cena produktu</span>
+                                    <InputNumber id="productPrice" @bind-Value="ProductDto.ProductPrice" class="form-control"/>
+                                </div>
+        
+                                <div class="input-group mb-3">
+                                    <span for="categories" class="input-group-text">Kategorie</span>
+                                    <select id="categories" class="form-select" @bind="SelectedCategories" multiple>
+                                        @foreach (var category in ProductCategoryListViewModel.ProductCategories)
+                                        {
+                                            <option
+                                                value="@category.Id" selected="@category.IsSelected">
+                                                @category.CategoryName
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+        
+                                <div class="mb-3">
+                                    @foreach (var productImage in ProductDto.Images)
+                                    {
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-3">
+                                                            <img src="https://localhost:6001/api/files/@productImage.Id" style="max-height: 50px">
+                                                        </div>
+                                                        <div class="col"></div>
+                                                        <div class="col-1">
+                                                            <InputCheckbox @bind-Value="productImage.IsMain" @onclick="() => SetMainImage(productImage.Id)"/>
+                                                        </div>
+                                                        <div class="col-1">
+                                                            <button class="btn btn-danger" @onclick="() => DeleteProductImage(productImage.Id)">Usuń</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    }
+                                    
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" for="FileInput">Dodaj zdjęcie</span>
+                                        <InputFile id="FileInput" class="form-control" OnChange="HandleFileInput"/>
+                                        <a class="btn btn-outline-secondary" @onclick="AddProductImage">Dodaj</a>
                                     </div>
                                 </div>
-                            }
-                            
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" for="FileInput">Dodaj zdjęcie</span>
-                                <InputFile id="FileInput" class="form-control" OnChange="HandleFileInput"/>
-                                <a class="btn btn-outline-secondary" @onclick="AddProductImage">Dodaj</a>
-                            </div>
+        
+        
+                                <button type="submit" class="btn btn-primary mb-2" @onclick="EditProductOnSubmit">Zapisz</button>
+                                <button class="btn btn-danger mb-2" @onclick="BackToList">Anuluj</button>
+                            </EditForm>
                         </div>
-
-
-                        <button type="submit" class="btn btn-primary mb-2" @onclick="EditProductOnSubmit">Zapisz</button>
-                        <button class="btn btn-danger mb-2" @onclick="BackToList">Anuluj</button>
-                    </EditForm>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        Not authorized!
+    </NotAuthorized>
+</AuthorizeView>
+
 
 @code {
 

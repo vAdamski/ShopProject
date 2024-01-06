@@ -19,9 +19,9 @@ public class GetEditableProductQueryHandler : IRequestHandler<GetEditableProduct
     public async Task<EditableProductDto> Handle(GetEditableProductQuery request, CancellationToken cancellationToken)
     {
         var product = await _ctx.Products
+            .Where(x => x.Id == request.Id && x.StatusId == 1)
             .Include(x => x.Categories)
             .Include(x => x.ProductImages)
-            .Where(x => x.Id == request.Id && x.StatusId == 1)
             .FirstOrDefaultAsync(cancellationToken);
 
         return BuildProductCategoryDto(product);

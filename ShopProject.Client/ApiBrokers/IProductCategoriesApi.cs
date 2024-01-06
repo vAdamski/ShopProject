@@ -7,4 +7,5 @@ public interface IProductCategoriesApi
 {
     Task CreateProductCategory(CreateProductCategoryDto createProductCategoryDto);
     Task<ProductCategoryListViewModel> GetListProductCategories();
+    Task DeleteProductCategory(Guid productCategoryId);
 }

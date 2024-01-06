@@ -18,7 +18,8 @@ public class GetProductsPageQueryHandler : IRequestHandler<GetProductsPageQuery,
     
     public async Task<ProductsViewModel> Handle(GetProductsPageQuery request, CancellationToken cancellationToken)
     {
-        var products = await _context.Products.Where(x => x.StatusId == 1)
+        var products = await _context.Products
+            .Where(x => x.StatusId == 1)
             .Skip((request.PageNo - 1) * request.PageSize)
             .Take(request.PageSize)
             .Include(x => x.Categories)

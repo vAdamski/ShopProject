@@ -20,7 +20,8 @@ public class GetEditableProductListQueryHandler : IRequestHandler<GetEditablePro
     public async Task<EditableProductsListViewModel> Handle(GetEditableProductListQuery request,
         CancellationToken cancellationToken)
     {
-        var products = await _context.Products.Where(x => x.StatusId == 1)
+        var products = await _context.Products
+            .Where(x => x.StatusId == 1)
             .Skip((request.PageNo - 1) * request.PageSize)
             .Take(request.PageSize)
             .Include(x => x.Categories)

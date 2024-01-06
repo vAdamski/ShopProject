@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   sqlserver:
     image: mcr.microsoft.com/azure-sql-edge
@@ -7,33 +9,72 @@ services:
       - MSSQL_SA_PASSWORD=Pass1234$
     ports:
       - 4000:1433
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    container_name: mssql-shopproject
+    environment:
+      - ACCEPT_EULA=true
+      - MSSQL_SA_PASSWORD=Adam#1234
+    ports:
+      - 4000:1433
   
   identity-server:
+    depends_on: 
+      - frontend
     build:
-      context: ./DuendeIdentityServer/.
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./DuendeIdentityServer/Dockerfile
     image: vazaras/shopproject-identity-server
     container_name: shopproject-identity-server
     ports:
       - 9000:80
       - 9001:443
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=9001
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pA55word!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/DuendeIdentityServer.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
   
   api:
+    depends_on: 
+      - mssql
     build:
-      context: ./ShopProject.Api/.
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./ShopProject.Api/Dockerfile
     image: vazaras/shopproject-api
     container_name: shopproject-api
     ports:
       - 9002:80
       - 9003:443
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=9003
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pA55word!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/ShopProject.Api.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    
   
   frontend:
+    depends_on: 
+      - api
     build:
-      context: ./ShopProject.Client/.
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./ShopProject.Client/Dockerfile
     image: vazaras/shopproject-frontend
     container_name: shopproject-frontend
     ports:
       - 9004:80
       - 9005:443
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=9005
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pA55word!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/ShopProject.Client.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/

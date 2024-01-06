@@ -4,8 +4,9 @@ namespace ShopProject.Client.Services;
 
 public interface ICartService
 {
-    event Action OnChange;
+    event Action? OnChange;
     Task AddToCart(ProductMinimumInfoDto product);
+    Task ClearCart();
     Task<List<ProductMinimumInfoDto>> GetProductsFromInCart();
     Task RemoveFromCart(Guid productId);
 }

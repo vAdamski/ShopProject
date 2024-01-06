@@ -1,16 +1,24 @@
 @page "/productsManager"
 @using ShopProject.Client.Components
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-6 col-sm-12 mb-2">
-            <ProductListTab/>
+<AuthorizeView>
+    <Authorized>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12 mb-2">
+                    <ProductListTab/>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-2">
+                    <CreateProductTab/>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-6 col-sm-12 mb-2">
-            <CreateProductTab/>
-        </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        Not authorized!
+    </NotAuthorized>
+</AuthorizeView>
+
 
 @code {
 }

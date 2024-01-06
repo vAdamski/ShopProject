@@ -3,8 +3,8 @@
 @using ShopProject.Shared.Dtos
 @using ShopProject.Client.Services
 @inject IHttpClientFactory ClientFactory
-@inject HttpClient HttpClient
 @inject ICartService CartService
+
 
 <style>
     .product{
@@ -69,7 +69,8 @@
                         <div class="btn-group me-2" role="group">
                             @for(int i = 1; i <= Vm.MaxPageNo; i++)
                             {
-                                <button type="button" class="@CurrentPageClass(i)">@i</button>
+                                int currentPage = i; // Capture the current value of i
+                                <button type="button" class="@CurrentPageClass(currentPage)" @onclick="() => DownloadData(currentPage)">@i</button>
                             }
                         </div>
                     </div>
@@ -85,14 +86,22 @@
     
     protected override async Task OnInitializedAsync()
     {
-        var NoAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
-        Vm = await NoAuthenticationClient.GetFromJsonAsync<ProductsViewModel>("https://localhost:6001/api/products/get-products");
+        var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+        Vm = await noAuthenticationClient.GetFromJsonAsync<ProductsViewModel>("https://localhost:6001/api/products/get-products");
     }
     
-    private string CurrentPageClass(int pageNo) => Vm.CurrentPageNo == pageNo ? "btn-primary" : "btn-outline-secondary";
+    private string CurrentPageClass(int pageNo) => Vm.CurrentPageNo == pageNo ? "btn btn-primary" : "btn btn-outline-secondary";
 
     private async Task AddToCart(ProductMinimumInfoDto productMinimumInfoDto)
     {
         await CartService.AddToCart(productMinimumInfoDto);
+    }
+
+    private async Task DownloadData(int pageNo)
+    {
+        var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+        Vm = await noAuthenticationClient.GetFromJsonAsync<ProductsViewModel>($"https://localhost:6001/api/products/get-products/{pageNo}");
+        
+        StateHasChanged();
     }
 }

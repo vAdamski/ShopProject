@@ -16,4 +16,7 @@ public class ProductCategoriesApi : ApiBroker, IProductCategoriesApi
 
     public async Task<ProductCategoryListViewModel> GetListProductCategories() =>
         await GetFromJsonAsync<ProductCategoryListViewModel>($"{ProductCategoryRelativeUrl}/all");
+    
+    public async Task DeleteProductCategory(Guid productCategoryId) =>
+        await DeleteAsync($"{ProductCategoryRelativeUrl}/delete/{productCategoryId}");
 }

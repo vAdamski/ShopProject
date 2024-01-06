@@ -1,10 +1,13 @@
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Http;
 using ShopProject.Shared.Dtos;
 
 namespace ShopProject.Client.Services;
 
+
 public class CartService : ICartService
 {
+    private static string CART_NAME = "cart";
     private readonly ILocalStorageService _localStorageService;
     public event Action? OnChange;
 
@@ -12,10 +15,10 @@ public class CartService : ICartService
     {
         _localStorageService = localStorageService;
     }
-
+    
     public async Task AddToCart(ProductMinimumInfoDto product)
     {
-        var cart = await _localStorageService.GetItemAsync<List<ProductMinimumInfoDto>>("cart");
+        var cart = await _localStorageService.GetItemAsync<List<ProductMinimumInfoDto>>(CART_NAME);
 
         if (cart == null)
         {
@@ -24,19 +27,26 @@ public class CartService : ICartService
 
         cart.Add(product);
 
-        await _localStorageService.SetItemAsync("cart", cart);
+        await _localStorageService.SetItemAsync(CART_NAME, cart);
 
         OnChange.Invoke();
     }
+    
+    public async Task ClearCart()
+    {
+        await _localStorageService.RemoveItemAsync(CART_NAME);
+        OnChange.Invoke();
+    }
+    
 
     public async Task<List<ProductMinimumInfoDto>> GetProductsFromInCart()
     {
-        return await _localStorageService.GetItemAsync<List<ProductMinimumInfoDto>>("cart");
+        return await _localStorageService.GetItemAsync<List<ProductMinimumInfoDto>>(CART_NAME);
     }
 
     public async Task RemoveFromCart(Guid productId)
     {
-        var cart = await _localStorageService.GetItemAsync<List<ProductMinimumInfoDto>>("cart");
+        var cart = await _localStorageService.GetItemAsync<List<ProductMinimumInfoDto>>(CART_NAME);
 
         if (cart == null) return;
 
@@ -46,7 +56,7 @@ public class CartService : ICartService
         
         cart.Remove(product);
         
-        await _localStorageService.SetItemAsync("cart", cart);
+        await _localStorageService.SetItemAsync(CART_NAME, cart);
         
         OnChange.Invoke();
     }

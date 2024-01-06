@@ -10,6 +10,7 @@ using ShopProject.Application;
 using ShopProject.Application.Common.Interfaces;
 using ShopProject.Infrastructure;
 using ShopProject.Persistence;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,16 +113,15 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CORS", policy => policy.WithOrigins(
-            "https://localhost:5001",
-            "https://localhost:6001",
-            "https://localhost:7001"
-        )
+    options.AddPolicy("CORS", policy => policy
+        .AllowAnyOrigin()
         .AllowAnyHeader()
         .AllowAnyMethod());
 });
 
 var app = builder.Build();
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("StripeConfiguration:SecretKey").Get<string>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

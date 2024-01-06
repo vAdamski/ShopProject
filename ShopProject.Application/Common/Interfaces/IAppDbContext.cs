@@ -9,5 +9,5 @@ public interface IAppDbContext
     DbSet<ProductCategory> ProductCategories { get; set; }
     DbSet<ProductImage> ProductImages { get; set; }
     DbSet<Order> Orders { get; set; }
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

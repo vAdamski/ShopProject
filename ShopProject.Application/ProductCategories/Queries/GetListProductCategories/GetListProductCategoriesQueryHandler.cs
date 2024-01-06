@@ -20,6 +20,7 @@ public class GetListProductCategoriesQueryHandler : IRequestHandler<GetListProdu
         try
         {
             var categories = await _ctx.ProductCategories
+                .Where(x => x.StatusId == 1)
                 .Select(x => new ProductCategoryDto()
                 {
                     Id = x.Id,

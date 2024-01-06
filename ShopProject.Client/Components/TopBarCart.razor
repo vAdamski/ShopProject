@@ -26,7 +26,10 @@
 
     private int GetProductsCount()
     {
-        var cart = LocalStorage.GetItem<List<ProductMinimumInfoDto>>("cart");
+        List<ProductMinimumInfoDto> cart;
+        
+        cart = LocalStorage.GetItem<List<ProductMinimumInfoDto>>("cart");
+        
         return cart?.Count ?? 0;
     }
 }

@@ -13,6 +13,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient<IProductCategoriesApi, ProductCategoriesApi>();
 builder.Services.AddTransient<IProductApi, ProductApi>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IPaymentBroker, PaymentBroker>();
+
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddHttpClient("ServerAPI.NoAuthenticationClient",

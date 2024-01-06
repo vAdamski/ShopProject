@@ -1,0 +1,102 @@
+@page "/PaymentResult/{status}/{orderId}"
+@using ShopProject.Client.Services
+@inject ICartService CartService
+@inject NavigationManager NavigationManager
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<style>
+    .mid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-size: 2rem;
+    }
+    
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 100
+    }
+    
+    .material-symbols-outlined {
+          font-size: 100px;
+    }
+</style>
+
+<div class="mid">
+    <span class="material-symbols-outlined mb-3" style="color: @GetColor()">
+        @GetIcon()
+    </span>
+    
+    <p class="mb-3">@GetMessage()</p>
+    
+    <a class="btn @GetButtonClass()" href="">Powrót do strony głównej</a>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Status { get; set; }
+    
+    [Parameter]
+    public Guid OrderId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Status == "success")
+        {
+            await CartService.ClearCart();
+            
+            await Task.Delay(10000);
+            
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    public string GetIcon()
+    {
+        return Status switch
+        {
+            "success" => "check_circle",
+            "cancel" => "cancel",
+            _ => "warning"
+            };
+    }
+
+    public string GetColor()
+    {
+        return Status switch
+        {
+            "success" => "green",
+            "cancel" => "red",
+            _ => "orange"
+            };
+    }
+    
+    public string GetMessage()
+    {
+        return Status switch
+        {
+            "success" => "Płatność zakończona sukcesem",
+            "cancel" => "Płatność zakończona niepowodzeniem",
+            _ => "Płatność zakończona niepowodzeniem"
+            };
+    }
+    
+    public string GetButtonClass()
+    {
+        return Status switch
+        {
+            "success" => "btn-success",
+            "cancel" => "btn-danger",
+            _ => "btn-warning"
+            };
+    }
+}
