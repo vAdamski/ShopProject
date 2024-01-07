@@ -79,7 +79,7 @@ public class CreateStripePaymentBuilder : ICreateStripePaymentBuilder
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    UnitAmount = (long)item.ProductPrice * 100,
+                    UnitAmount = (long)(item.ProductPrice * 100),
                     Currency = _currency,
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {

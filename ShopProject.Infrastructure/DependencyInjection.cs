@@ -3,6 +3,7 @@ using ShopProject.Application.Common.Interfaces;
 using ShopProject.Infrastructure.Common;
 using ShopProject.Infrastructure.FileStore;
 using ShopProject.Infrastructure.Services;
+using ShopProject.Infrastructure.Services.MailSender;
 
 namespace ShopProject.Infrastructure;
 
@@ -21,6 +22,9 @@ public static class DependencyInjection
         services.AddTransient<IFileWrapper, FileWrapper>();
         services.AddTransient<IStaticFilesService, StaticFilesService>();
         services.AddSingleton<IStaticFilePath, StaticFilePath>();
+        
+        // Mail sender
+        services.AddSingleton<IEmailSenderConfiguration, EmailSenderConfiguration>();
         
         
         return services;

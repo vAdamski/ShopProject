@@ -1,7 +1,10 @@
 @using ShopProject.Shared.ViewModels
 @using ShopProject.Client.ApiBrokers
+@using ShopProject.Shared.Enums
 @inherits ComponentBase
 @inject IOrdersBroker OrdersBroker
+@inject IPaymentBroker PaymentBroker
+@inject NavigationManager NavigationManager
 
 <div class="conatiner">
     <h3>Lista zamówień</h3>
@@ -14,6 +17,7 @@
                     <th>Status</th>
                     <th>Przedmiot</th>
                     <th>Wartość</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -25,7 +29,15 @@
                             <td>@order.OrderId</td>
                             <td>@order.StatusMessage</td>
                             <td></td>
-                            <td>@order.TotalPrice</td>
+                            <td class="fw-bold">@order.TotalPrice</td>
+                            <td>
+                                @if (order.State == OrderState.WaitingForPayment)
+                                {
+                                    <button class="btn btn btn-warning" @onclick="() => PayOrder(order.OrderId)">
+                                        Opłać
+                                    </button>
+                                }
+                            </td>
                         </tr>
                         foreach (var item in order.OrderItems)
                         {
@@ -34,6 +46,7 @@
                                 <td></td>
                                 <td>@item.Name</td>
                                 <td>@item.Price</td>
+                                <td></td>
                             </tr>
                         }
                     }
@@ -54,5 +67,15 @@
     protected override async Task OnInitializedAsync()
     {
         _ordersListVm = await OrdersBroker.GetOrdersAsync();
+    }
+    
+    private async Task PayOrder(Guid orderId)
+    {
+        var response = await PaymentBroker.PostPaymentAsync(orderId);
+        
+        if (!string.IsNullOrEmpty(response))
+        {
+            NavigationManager.NavigateTo(response);
+        }
     }
 }
