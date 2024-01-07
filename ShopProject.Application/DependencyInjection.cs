@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddTransient<IOrdersManager, OrdersManager>();
         services.AddTransient<ICreateStripePaymentBuilder, CreateStripePaymentBuilder>();
         services.AddTransient<IPaymentService, PaymentService>();
+        services.AddTransient<ICodesMailSenderService, CodesMailSenderService>();
         
         return services;
     }

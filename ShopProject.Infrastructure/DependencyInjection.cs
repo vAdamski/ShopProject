@@ -25,6 +25,7 @@ public static class DependencyInjection
         
         // Mail sender
         services.AddSingleton<IEmailSenderConfiguration, EmailSenderConfiguration>();
+        services.AddTransient<IMailSenderService, MailSenderService>();
         
         
         return services;
