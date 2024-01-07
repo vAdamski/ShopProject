@@ -18,6 +18,20 @@ public class SeedData
             context.Database.Migrate();
 
             var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            
+            var adminRole = roleMgr.FindByNameAsync("admin").Result;
+            if (adminRole == null)
+            {
+                adminRole = new IdentityRole("admin");
+                var result = roleMgr.CreateAsync(adminRole).Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+                Log.Debug("admin role created");
+            }
+            
             var alice = userMgr.FindByNameAsync("alice").Result;
             if (alice == null)
             {
@@ -54,6 +68,13 @@ public class SeedData
             else
             {
                 Log.Debug("alice already exists");
+            }
+            
+            var aliceRole = userMgr.FindByNameAsync("alice").Result;
+            if (aliceRole != null)
+            {
+                userMgr.AddToRoleAsync(aliceRole, "admin").Wait();
+                Log.Debug("alice added to admin role");
             }
 
             var bob = userMgr.FindByNameAsync("bob").Result;

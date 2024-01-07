@@ -32,6 +32,49 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Order> Orders { get; set; }
 
+    public async Task<int> SaveChangesAsync(string createdBy,CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Deleted:
+                    entry.Entity.ModifiedBy = createdBy;
+                    entry.Entity.Modified = _dateTime.Now;
+                    entry.Entity.Inactivated = _dateTime.Now;
+                    entry.Entity.InactivatedBy = createdBy;
+                    entry.Entity.StatusId = 0;
+                    entry.State = EntityState.Modified;
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.ModifiedBy = createdBy;
+                    entry.Entity.Modified = _dateTime.Now;
+                    break;
+                case EntityState.Added:
+                    entry.Entity.CreatedBy = createdBy;
+                    entry.Entity.Created = _dateTime.Now;
+                    entry.Entity.StatusId = 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<ValueObject>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Deleted:
+                    entry.State = EntityState.Modified;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())

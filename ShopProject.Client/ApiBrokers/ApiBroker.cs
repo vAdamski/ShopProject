@@ -26,6 +26,13 @@ public class ApiBroker : IApiBroker
 
     protected async Task PostAsync<T>(string relativeUrl, MultipartContent content) =>
         await _httpClient.PostAsync(relativeUrl, content);
+    
+    protected async Task<HttpResponseMessage> PostAsync(string relativeUrl)
+    {
+        var responseMessage = await _httpClient.PostAsync(relativeUrl, null);
+        
+        return responseMessage;
+    }
 
     protected async Task DeleteAsync(string relativeUrl, int id) =>
         await _httpClient.DeleteAsync($"{relativeUrl}/{id}");

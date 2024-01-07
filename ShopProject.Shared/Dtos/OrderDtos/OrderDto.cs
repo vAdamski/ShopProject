@@ -12,5 +12,8 @@ public class OrderDto
         OrderState.Paid => "Zapłacono",
         _ => "Unknown"
     };
+    
     public List<OrderItem> OrderItems { get; set; } = new();
+    
+    public decimal TotalPrice => OrderItems.Sum(x => x.Price);
 }

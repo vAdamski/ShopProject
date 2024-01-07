@@ -1,9 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ShopProject.Client;
 using ShopProject.Client.ApiBrokers;
+using ShopProject.Client.Common;
 using ShopProject.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -14,9 +16,14 @@ builder.Services.AddTransient<IProductCategoriesApi, ProductCategoriesApi>();
 builder.Services.AddTransient<IProductApi, ProductApi>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IPaymentBroker, PaymentBroker>();
+builder.Services.AddScoped<IOrdersBroker, OrdersBroker>();
+// Policy
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+builder.Services.AddAuthorizationCore(options => { options.AddPolicy(Policies.Admin, Policies.AdminRequirements()); });
 
 builder.Services.AddBlazoredLocalStorage();
-
+builder.Services.AddOptions();
 builder.Services.AddHttpClient("ServerAPI.NoAuthenticationClient",
     client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 

@@ -119,6 +119,10 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod());
 });
 
+using var scope = builder.Services.BuildServiceProvider().CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+dbContext.Database.EnsureCreated();
+
 var app = builder.Build();
 
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("StripeConfiguration:SecretKey").Get<string>();

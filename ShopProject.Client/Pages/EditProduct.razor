@@ -7,7 +7,7 @@
 @inject IProductApi ProductsApi
 @inject NavigationManager NavigationManager
 
-<AuthorizeView>
+<AuthorizeView Policy="Admin">
     <Authorized>
         <div class="container">
             <div class="row">

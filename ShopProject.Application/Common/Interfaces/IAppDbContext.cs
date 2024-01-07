@@ -10,4 +10,5 @@ public interface IAppDbContext
     DbSet<ProductImage> ProductImages { get; set; }
     DbSet<Order> Orders { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(string createdBy, CancellationToken cancellationToken = default);
 }

@@ -1,0 +1,15 @@
+@page "/orders"
+@using ShopProject.Client.Components
+
+<AuthorizeView>
+    <Authorized>
+        <OrdersList />
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to view this page.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShopProject.Application.Common.Interfaces;
 using ShopProject.Application.Files.Queries.GetImage;
 
 namespace ShopProject.Api.Controllers;

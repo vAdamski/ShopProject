@@ -7,6 +7,7 @@
 @inject ICartService CartService
 @inject IPaymentBroker PaymentBroker
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
 
 <div class="container">
     <div class="row mb-3">
@@ -100,7 +101,27 @@
         })
             .ToList();
         
-        var responseUrl = await PaymentBroker.PostPaymentAsync(vm);
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        string responseUrl = string.Empty;
+        
+        if (user.Identity.IsAuthenticated)
+        {
+            responseUrl = await PaymentBroker.PostPaymentAsync(vm);
+        }
+        else
+        {
+            var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+            var response = 
+                await noAuthenticationClient
+                    .PostAsJsonAsync("https://localhost:6001/api/payment/create-checkout-session", vm);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                responseUrl = await response.Content.ReadAsStringAsync();
+            }
+        }
         
         if (!string.IsNullOrEmpty(responseUrl))
         {

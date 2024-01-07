@@ -1,7 +1,10 @@
 @page "/PaymentResult/{status}/{orderId}"
 @using ShopProject.Client.Services
+@using ShopProject.Client.Common
 @inject ICartService CartService
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+
 
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -38,6 +41,8 @@
     <p class="mb-3">@GetMessage()</p>
     
     <a class="btn @GetButtonClass()" href="">Powrót do strony głównej</a>
+    
+    <p class="mt-3">Numer zamówienia: @OrderId</p>
 </div>
 
 
@@ -46,18 +51,33 @@
     public string Status { get; set; }
     
     [Parameter]
-    public Guid OrderId { get; set; }
+    public string OrderId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         if (Status == "success")
         {
+            await SetOrderStatus();
             await CartService.ClearCart();
             
             await Task.Delay(10000);
             
             NavigationManager.NavigateTo("/");
         }
+    }
+    
+    private async Task SetOrderStatus()
+    {
+        var client = ClientFactory.CreateClient("ShopProject.ServerAPI");
+        
+        var uri = string.Empty;
+
+        if (Status == "success")
+            uri = $"{StaticUrls.ApiUrl}/Orders/{OrderId}/state/1";
+        else
+            uri = $"{StaticUrls.ApiUrl}/Orders/{OrderId}/state/0";
+
+        await client.PutAsync(uri, null);
     }
 
     public string GetIcon()
