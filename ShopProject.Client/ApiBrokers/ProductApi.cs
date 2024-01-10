@@ -29,6 +29,11 @@ public class ProductApi : ApiBroker, IProductApi
     
     public async Task<EditableProductsListViewModel> GetEditableProducts() =>
         await GetFromJsonAsync<EditableProductsListViewModel>($"{ProductRelativeUrl}/get-editable-products");
+
+    public async Task DeleteProduct(Guid productId)
+    {
+        await DeleteAsync($"{ProductRelativeUrl}/delete-product/{productId}");
+    }
 }
 
 public interface IProductApi
@@ -39,4 +44,5 @@ public interface IProductApi
     Task<EditableProductDto> GetEditableProductDto(string productId);
     Task CreateProduct(MultipartFormDataContent multipartFormDataContent);
     Task<EditableProductsListViewModel> GetEditableProducts();
+    Task DeleteProduct(Guid productId);
 }
