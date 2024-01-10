@@ -67,6 +67,13 @@
         </div>
     </div>
     <div class="row mb-3">
+        <div class="form-check">
+            <input id="regulationCheckbox" type="checkbox" @bind="IsAgree"/>
+            <label class="form-check-label" for="regulationCheckbox">Akceptuję <a @onclick="GoToRegulations" style="color: dodgerblue; text-decoration-line: underline;">regulamin</a></label>
+        </div>
+        <span class="text-danger">@AgreeErrorMessage</span>
+    </div>
+    <div class="row mb-3">
         <div class="col-12 text-center">
             <a class="btn btn-success" @onclick="Pay">Zapłać</a>
         </div>
@@ -76,6 +83,9 @@
 
 @code {
     public string Email { get; set; } = string.Empty;
+
+    public bool IsAgree { get; set; } = false;
+    public string AgreeErrorMessage { get; set; } = string.Empty;
 
     public List<ProductMinimumInfoDto> Products { get; set; } = new();
 
@@ -92,20 +102,30 @@
 
     public async Task Pay()
     {
+        if (!IsAgree)
+        {
+            AgreeErrorMessage = "Musisz zaakceptować regulamin";
+            return;
+        }
+        else
+        {
+            AgreeErrorMessage = string.Empty;
+        }
+
         var vm = new CartPaymentVm();
         vm.Email = Email;
         vm.Items = Products.Select(x => new CartItemDto()
-        {
-            Id = x.ProductId,
-            Quantity = 1
-        })
+            {
+                Id = x.ProductId,
+                Quantity = 1
+            })
             .ToList();
-        
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        
+
         string responseUrl = string.Empty;
-        
+
         if (user.Identity.IsAuthenticated)
         {
             responseUrl = await PaymentBroker.PostPaymentAsync(vm);
@@ -113,19 +133,25 @@
         else
         {
             var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
-            var response = 
+            var response =
                 await noAuthenticationClient
                     .PostAsJsonAsync("https://localhost:6001/api/payment/create-checkout-session", vm);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 responseUrl = await response.Content.ReadAsStringAsync();
             }
         }
-        
+
         if (!string.IsNullOrEmpty(responseUrl))
         {
             NavigationManager.NavigateTo(responseUrl);
         }
     }
+
+    private void GoToRegulations()
+    {
+        NavigationManager.NavigateTo($"/Regulations");
+    }
+
 }
