@@ -42,7 +42,22 @@
                                         <img src="https://localhost:6001/api/files/@product.ImageId"/>
                                     </div>
                                     <div class="col-6">
-                                        <h4>@product.ProductName</h4>
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <h4>@product.ProductName</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @foreach(var category in product.Categories)
+                                                    {
+                                                        <span class="badge bg-secondary">@category</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
                                     <div class="col-3">
                                         <div class="text-center">
