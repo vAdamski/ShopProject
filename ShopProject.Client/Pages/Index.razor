@@ -28,6 +28,7 @@
 
 
 <div class="container-fluid">
+    <h3>Produkty</h3>
     <div class="row">
         <div class="col-12">
             <div class="container-fluid">
@@ -57,7 +58,7 @@
                 <div class="row mb-2">
                     <div class="btn-toolbar mb-3" role="toolbar">
                         <div class="btn-group me-2" role="group">
-                            @for(int i = 1; i <= Vm.MaxPageNo; i++)
+                            @for (int i = 1; i <= Vm.MaxPageNo; i++)
                             {
                                 int currentPage = i; // Capture the current value of i
                                 <button type="button" class="@CurrentPageClass(currentPage)" @onclick="() => DownloadData(currentPage)">@i</button>

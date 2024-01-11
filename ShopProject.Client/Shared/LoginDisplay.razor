@@ -4,12 +4,12 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
-        <button class="nav-lik btn btn-link" @onclick="BeginSignOut">Log out</button>
+        Witaj, @context.User.Identity.Name!
+        <button class="nav-lik btn btn-link" @onclick="BeginSignOut">Wyloguj</button>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
-        <a href="https://localhost:5001/Account/Register?ReturnUrl=https://localhost:7001">Register</a>
+        <a href="authentication/login">Zaloguj</a>
+        <a href="https://localhost:5001/Account/Register?ReturnUrl=https://localhost:7001">Rejestracja </a>
     </NotAuthorized>
 </AuthorizeView>
 
