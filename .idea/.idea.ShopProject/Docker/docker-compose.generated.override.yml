@@ -1,0 +1,67 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  api:
+    build:
+      context: "/Users/adamludwiczak/RiderProjects/ShopProject/ShopProject.Api"
+      dockerfile: "Dockerfile"
+      target: "build"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net7.0/ShopProject.Api.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_STATICWEBASSETS: "/app/bin/Debug/net7.0/ShopProject.Api.staticwebassets.runtime.CT.json"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      NUGET_PACKAGES: "/Users/adamludwiczak/.nuget/packages"
+      NUGET_FALLBACK_PACKAGES: "/Users/adamludwiczak/.nuget/packages"
+    image: "vazaras/shopproject-api:dev"
+    ports: []
+    volumes:
+    - "/Users/adamludwiczak/.nuget/packages:/root/.nuget/fallbackpackages"
+    - "/Users/adamludwiczak/RiderProjects/ShopProject/ShopProject.Api:/app:rw"
+    - "/Users/adamludwiczak/RiderProjects/ShopProject:/src:rw"
+    working_dir: "/app"
+  frontend:
+    build:
+      context: "/Users/adamludwiczak/RiderProjects/ShopProject/ShopProject.Client"
+      dockerfile: "Dockerfile"
+      target: "build"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/../../../.nuget/packages/microsoft.aspnetcore.components.webassembly.devserver/7.0.5/tools/blazor-devserver.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      NUGET_PACKAGES: "/Users/adamludwiczak/.nuget/packages"
+      NUGET_FALLBACK_PACKAGES: "/Users/adamludwiczak/.nuget/packages"
+    image: "vazaras/shopproject-frontend:dev"
+    ports: []
+    volumes:
+    - "/Users/adamludwiczak/.nuget/packages:/root/.nuget/fallbackpackages"
+    - "/Users/adamludwiczak/RiderProjects/ShopProject/ShopProject.Client:/app:rw"
+    - "/Users/adamludwiczak/RiderProjects/ShopProject:/src:rw"
+    working_dir: "/app"
+  identity-server:
+    build:
+      context: "/Users/adamludwiczak/RiderProjects/ShopProject/DuendeIdentityServer"
+      dockerfile: "Dockerfile"
+      target: "build"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net7.0/DuendeIdentityServer.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_STATICWEBASSETS: "/app/bin/Debug/net7.0/DuendeIdentityServer.staticwebassets.runtime.CT.json"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      NUGET_PACKAGES: "/Users/adamludwiczak/.nuget/packages"
+      NUGET_FALLBACK_PACKAGES: "/Users/adamludwiczak/.nuget/packages"
+    image: "vazaras/shopproject-identity-server:dev"
+    ports: []
+    volumes:
+    - "/Users/adamludwiczak/.nuget/packages:/root/.nuget/fallbackpackages"
+    - "/Users/adamludwiczak/RiderProjects/ShopProject/DuendeIdentityServer:/app:rw"
+    - "/Users/adamludwiczak/RiderProjects/ShopProject:/src:rw"
+    working_dir: "/app"
