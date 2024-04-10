@@ -34,4 +34,12 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="logs\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="logs\webapi-20240403.log" />
+    </ItemGroup>
+
 </Project>

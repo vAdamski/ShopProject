@@ -1,5 +1,75 @@
 ﻿@page "/"
+@using ShopProject.Shared.ViewModels
+@using ShopProjectMobileApp.Services
+@inject IProductService ProductService
 
-<h1>Hello, world!</h1>
+<div class="container-fluid">
+    <div class="row text-center">
+        <h3>Produkty</h3>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    @foreach (var product in ProductVm.Products)
+                    {
+                        <div class="col-12 mb-5 product" href="~/product-info/@product.ProductId">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    @* <div class="col-3 text-center"> *@
+                                    @*     <img src="https://localhost:6001/api/files/@product.ImageId"/> *@
+                                    @* </div> *@
+                                    <div class="col">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <h4>@product.ProductName</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    @foreach (var category in product.Categories)
+                                                    {
+                                                        <span class="badge bg-secondary">@category</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
 
-Welcome to your new app.
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-center">
+                                            <h2>@product.ProductPrice.ToString()</h2>
+                                            <button class="btn btn-success">Dodaj do koszyka</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row mb-2">
+                    <div class="btn-toolbar mb-3" role="toolbar">
+                        <div class="btn-group me-2" role="group">
+                            @for (int i = 1; i <= ProductVm.MaxPageNo; i++)
+                            {
+                                int currentPage = i; // Capture the current value of i
+                                <button type="button" class="">@i</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    public ProductsViewModel? ProductVm { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        ProductVm = await ProductService.GetProductsViewModel();
+    }
+}
