@@ -26,7 +26,7 @@ public class PaymentController : BaseController
     }
 
     [HttpPost("create-checkout-session/{orderId}")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> CreateRepaymentSession(Guid orderId)
     {
         var response = await Mediator.Send(new CreateRepaymentRequestCommand

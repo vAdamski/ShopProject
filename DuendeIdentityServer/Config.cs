@@ -49,7 +49,7 @@ public static class Config
                     "api1", "openid", "user", "role", "profile", IdentityServerConstants.LocalApi.ScopeName,
                     "firstName", "lastName"
                 },
-                AllowedCorsOrigins = { "https://localhost:7001", "https://localhost:5001" },
+                AllowedCorsOrigins = { "https://localhost:7001", "https://idsshopproject.azurewebsites.net" },
                 RedirectUris = { "https://localhost:7001/authentication/login-callback" },
                 PostLogoutRedirectUris = { "https://localhost:7001/" }
             },
@@ -74,8 +74,30 @@ public static class Config
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AllowAccessTokensViaBrowser = true,
                 RedirectUris = { "https://localhost:6001/swagger/oauth2-redirect.html" },
-                AllowedCorsOrigins = { "https://localhost:6001", "https://localhost:5001" },
+                AllowedCorsOrigins = { "https://localhost:6001", "https://idsshopproject.azurewebsites.net" },
                 Enabled = true
             },
+            new Client
+            {
+                ClientId = "mobileapp",
+                ClientName = "Client for Mobile App",
+                
+                AllowedGrantTypes = GrantTypes.Code,
+                ClientSecrets = { new Secret("secret".Sha256()) },
+                RequirePkce = true,
+                RequireClientSecret = false,
+                // Add allowed scopes as required
+                AllowedScopes =
+                {
+                    "api1", "openid", "user", "role", "profile",
+                    IdentityServerConstants.LocalApi.ScopeName,
+                    "firstName", "lastName"
+                },
+                // Add allowed CORS origins as required
+                AllowedCorsOrigins = { "https://idsshopproject.azurewebsites.net", "myapp://callback" },
+                RedirectUris = { "myapp://callback" },
+                PostLogoutRedirectUris = { "myapp://callback" },
+                Enabled = true
+            }
         };
 }

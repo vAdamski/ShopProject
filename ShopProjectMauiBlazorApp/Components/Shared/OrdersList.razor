@@ -1,0 +1,96 @@
+@inherits ComponentBase
+@using ShopProject.Shared.ViewModels
+@using ShopProject.Shared.Enums
+@using ShopProjectMauiBlazorApp.Controllers
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+
+<div class="conatiner">
+    <h3>Lista zamówień</h3>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped table-borderless">
+                <thead>
+                <tr>
+                    <th>Zamówienie</th>
+                    <th>Status</th>
+                    <th>Przedmiot</th>
+                    <th>Wartość</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (_ordersListVm != null && _ordersListVm.OrderDtos.Any())
+                {
+                    foreach (var order in _ordersListVm.OrderDtos)
+                    {
+                        <tr>
+                            <td>@order.OrderId</td>
+                            <td>@order.StatusMessage</td>
+                            <td></td>
+                            <td class="fw-bold">@order.TotalPrice</td>
+                            <td>
+                                @if (order.State == OrderState.WaitingForPayment)
+                                {
+                                    <button class="btn btn btn-warning" @onclick="() => PayOrder(order.OrderId)">
+                                        Opłać
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                        foreach (var item in order.OrderItems)
+                        {
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>@item.Name</td>
+                                <td>@item.Price</td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                }
+                else
+                {
+                    <p class="text-center">Ładowanie...</p>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private OrdersListVm _ordersListVm { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+        _ordersListVm = await noAuthenticationClient.GetFromJsonAsync<OrdersListVm>($"{WebAddressHelper.Address}/api/Orders/get-orders-by-email?email=adam.ludwiczak98@gmail.com");
+    }
+
+    private async Task PayOrder(Guid orderId)
+    {
+        var response = await CreatePayment(orderId);
+
+        if (!string.IsNullOrEmpty(response))
+        {
+            NavigationManager.NavigateTo(response);
+        }
+    }
+
+    public async Task<string> CreatePayment(Guid orderId)
+    {
+        var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+        
+        var response = await noAuthenticationClient.PostAsync($"{WebAddressHelper.Address}/api/payment/create-checkout-session/{orderId}", null);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            var redirectUrl = await response.Content.ReadAsStringAsync();
+            return redirectUrl;
+        }
+
+        return "";
+    }
+}

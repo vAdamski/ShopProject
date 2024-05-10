@@ -42,7 +42,7 @@ builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
         
-        options.Authority = "https://localhost:5001";
+        options.Authority = "https://idsshopproject.azurewebsites.net";
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -76,8 +76,8 @@ builder.Services.AddSwaggerGen(options =>
         {
             AuthorizationCode = new OpenApiOAuthFlow
             {
-                AuthorizationUrl = new Uri("https://localhost:5001/connect/authorize"),
-                TokenUrl = new Uri("https://localhost:5001/connect/token"),
+                AuthorizationUrl = new Uri("https://idsshopproject.azurewebsites.net/connect/authorize"),
+                TokenUrl = new Uri("https://idsshopproject.azurewebsites.net/connect/token"),
                 Scopes = new Dictionary<string, string>
                 {
                     { "api1", "Full access" },

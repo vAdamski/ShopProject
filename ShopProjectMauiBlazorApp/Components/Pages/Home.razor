@@ -1,5 +1,80 @@
 ﻿@page "/"
-@attribute [Authorize]
-<h1>Hello, world!</h1>
+@using ShopProject.Shared.Dtos
+@using ShopProject.Shared.ViewModels
+@using ShopProjectMauiBlazorApp.Components.Vms
+@using ShopProjectMauiBlazorApp.Controllers
+@inject IHttpClientFactory ClientFactory
 
-Welcome to your new app.
+<style>
+    .product{
+        padding: 5px;
+    }
+
+    .product:hover {
+        border: 1px solid grey;
+        border-radius: 5px;
+        -webkit-box-shadow: 0px 0px 21px -7px rgba(66, 68, 90, 1);
+        -moz-box-shadow: 0px 0px 21px -7px rgba(66, 68, 90, 1);
+        box-shadow: 0px 0px 21px -7px rgba(66, 68, 90, 1);
+    }
+
+    img {
+        border-radius: 8px;
+        max-height: 100px;
+        max-width: 100px;
+    }
+</style>
+
+
+<div class="container-fluid">
+    <h3>Produkty</h3>
+    <div class="row">
+        <div class="col-12">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    @foreach (var product in Vm.Products)
+                    {
+                        <ProductVm Product="product"/>
+                    }
+                </div>
+                @* <div class="row mb-2"> *@
+                @*     <div class="btn-toolbar mb-3" role="toolbar"> *@
+                @*         <div class="btn-group me-2" role="group"> *@
+                @*             @for (int i = 1; i <= Vm.MaxPageNo; i++) *@
+                @*             { *@
+                @*                 int currentPage = i; // Capture the current value of i *@
+                @*                 <button type="button" class="@CurrentPageClass(currentPage)" @onclick="() => DownloadData(currentPage)">@i</button> *@
+                @*             } *@
+                @*         </div> *@
+                @*     </div> *@
+                @* </div> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(ExceptionMessage))
+{
+    <p style="color: red;">@ExceptionMessage</p>
+}
+
+
+@code
+{
+    public ProductsViewModel Vm { get; set; } = new();
+    public string ExceptionMessage { get; set; } = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+            Vm = await noAuthenticationClient.GetFromJsonAsync<ProductsViewModel>($"{WebAddressHelper.Address}/api/products/get-products");
+        }
+        catch (Exception ex)
+        {
+            ExceptionMessage = ex.Message;
+        }  
+    }
+}

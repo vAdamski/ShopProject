@@ -1,10 +1,8 @@
 @page "/PaymentResult/{status}/{orderId}"
-@using ShopProject.Client.Services
-@using ShopProject.Client.Common
 @using ShopProject.Shared.Interfaces
 @inject ICartService CartService
 @inject NavigationManager NavigationManager
-@inject IHttpClientFactory ClientFactory
+@* @inject IHttpClientFactory ClientFactory *@
 
 
 <head>
@@ -69,16 +67,16 @@
     
     private async Task SetOrderStatus()
     {
-        var client = ClientFactory.CreateClient("ShopProject.ServerAPI");
-        
-        var uri = string.Empty;
-
-        if (Status == "success")
-            uri = $"{StaticUrls.ApiUrl}/Orders/{OrderId}/state/1";
-        else
-            uri = $"{StaticUrls.ApiUrl}/Orders/{OrderId}/state/0";
-
-        await client.PutAsync(uri, null);
+        // var client = ClientFactory.CreateClient("ShopProject.ServerAPI");
+        //
+        // var uri = string.Empty;
+        //
+        // if (Status == "success")
+        //     uri = $"{StaticUrls.ApiUrl}/Orders/{OrderId}/state/1";
+        // else
+        //     uri = $"{StaticUrls.ApiUrl}/Orders/{OrderId}/state/0";
+        //
+        // await client.PutAsync(uri, null);
     }
 
     public string GetIcon()

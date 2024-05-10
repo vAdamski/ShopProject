@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopProject.Application.Orders.Commands.UpdateOrderState;
 using ShopProject.Application.Orders.Queries.GetAllUserOrders;
+using ShopProject.Application.Orders.Queries.GetAllUserOrdersByEmail;
 using ShopProject.Shared.Enums;
 
 namespace ShopProject.Api.Controllers;
@@ -34,7 +35,25 @@ public class OrdersController : BaseController
         }
     }
     
-    [HttpPut("{orderId}/state/{state}")]
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("get-orders-by-email")]
+    public async Task<IActionResult> GetOrders([FromQuery]string email)
+    {
+        try
+        {
+            var orders = await Mediator.Send(new GetAllUserOrdersByEmailQuery(email));
+
+            return Ok(orders);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting orders");
+            return BadRequest();
+        }
+    }
+    
+    [HttpGet("{orderId}/state/{state}")]
     [AllowAnonymous]
     public async Task<IActionResult> UpdateOrderState(Guid orderId, OrderState state)
     {

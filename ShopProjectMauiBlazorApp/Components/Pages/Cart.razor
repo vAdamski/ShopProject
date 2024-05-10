@@ -1,12 +1,10 @@
-@page "/Cart"
-@using ShopProject.Client.Services
+@page "/cart"
 @using ShopProject.Shared.Dtos
 @using ShopProject.Shared.ViewModels
-@using ShopProject.Client.ApiBrokers
 @using ShopProject.Shared.Interfaces
+@using ShopProjectMauiBlazorApp.Controllers
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ICartService CartService
-@inject IPaymentBroker PaymentBroker
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
 
@@ -112,7 +110,7 @@
         {
             AgreeErrorMessage = string.Empty;
         }
-
+        
         var vm = new CartPaymentVm();
         vm.Email = Email;
         vm.Items = Products.Select(x => new CartItemDto()
@@ -121,33 +119,47 @@
                 Quantity = 1
             })
             .ToList();
-
+        
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-
+        
         string responseUrl = string.Empty;
-
+        
         if (user.Identity.IsAuthenticated)
         {
-            responseUrl = await PaymentBroker.PostPaymentAsync(vm);
+            responseUrl = await PostPaymentAsync(vm);
         }
         else
         {
             var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
             var response =
                 await noAuthenticationClient
-                    .PostAsJsonAsync("https://localhost:6001/api/payment/create-checkout-session", vm);
-
+                    .PostAsJsonAsync($"{WebAddressHelper.Address}/api/payment/create-checkout-session", vm);
+        
             if (response.IsSuccessStatusCode)
             {
                 responseUrl = await response.Content.ReadAsStringAsync();
             }
         }
-
+        
         if (!string.IsNullOrEmpty(responseUrl))
         {
             NavigationManager.NavigateTo(responseUrl);
         }
+    }
+    
+    public async Task<string> PostPaymentAsync(CartPaymentVm cartPaymentVm)
+    {
+        var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+        var response = await noAuthenticationClient.PostAsJsonAsync($"{WebAddressHelper.Address}/api/payment/create-checkout-session", cartPaymentVm);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            var redirectUrl = await response.Content.ReadAsStringAsync();
+            return redirectUrl;
+        }
+        
+        return "";
     }
 
     private void GoToRegulations()

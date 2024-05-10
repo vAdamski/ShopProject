@@ -57,8 +57,10 @@ public class CreateStripePaymentBuilder : ICreateStripePaymentBuilder
         
         var options = new SessionCreateOptions
         {
-            SuccessUrl = _domain + $"/PaymentResult/success/{_orderId}",
-            CancelUrl = _domain + $"/PaymentResult/cancel/{_orderId}",
+            // SuccessUrl = _domain + $"/PaymentResult/success/{_orderId}",
+            // CancelUrl = _domain + $"/PaymentResult/cancel/{_orderId}",
+            SuccessUrl = _domain + $"/api/Orders/{_orderId}/state/1",
+            CancelUrl = _domain + $"/api/Orders/{_orderId}/state/0",
             LineItems = new List<SessionLineItemOptions>(),
             Mode = "payment",
             CustomerEmail = _email,

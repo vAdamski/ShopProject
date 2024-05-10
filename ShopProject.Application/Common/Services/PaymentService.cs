@@ -27,7 +27,7 @@ public class PaymentService : IPaymentService
                     "card",
                     "blik"
                 })
-                .WithDomain("https://localhost:7001")
+                .WithDomain("https://10.0.2.2:6001")
                 .WithCurrency("pln")
                 .BuildAsync(cancellationToken);
 

@@ -1,0 +1,23 @@
+@using ShopProject.Shared.Interfaces
+@inject ICartService CartService
+
+<span aria-hidden="true" class="bi bi-cart4"></span> Koszyk @GetProductsCount()
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        CartService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CartService.OnChange -= StateHasChanged;
+    }
+
+    private int GetProductsCount()
+    {
+        return CartService.GetProductsFromInCart().Result.Count;
+    }
+}

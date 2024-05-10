@@ -1,6 +1,6 @@
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Http;
 using ShopProject.Shared.Dtos;
+using ShopProject.Shared.Interfaces;
 
 namespace ShopProject.Client.Services;
 

@@ -7,6 +7,7 @@ using ShopProject.Client;
 using ShopProject.Client.ApiBrokers;
 using ShopProject.Client.Common;
 using ShopProject.Client.Services;
+using ShopProject.Shared.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

@@ -1,0 +1,15 @@
+@page "/orders"
+@using ShopProjectMauiBlazorApp.Components.Shared
+
+<AuthorizeView>
+    <Authorized>
+        <OrdersList />
+    </Authorized>
+    <NotAuthorized>
+        <p>Nie jesteś zalogowany lub nie masz uprawnień do tej strony!</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

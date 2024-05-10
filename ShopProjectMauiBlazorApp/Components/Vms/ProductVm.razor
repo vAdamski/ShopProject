@@ -1,0 +1,73 @@
+@using ShopProject.Shared.Dtos
+@using ShopProject.Shared.Interfaces
+@using ShopProjectMauiBlazorApp.Controllers
+@inject ICartService CartService
+@inject IHttpClientFactory ClientFactory
+
+<div class="col-12 mb-5 product" href="~/product-info/@Product.ProductId">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3 text-center">
+                <img src="@imageBase64Str" />
+            </div>
+            <div class="col-6">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>@Product.ProductName</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            @foreach (var category in Product.Categories)
+                            {
+                            <span class="badge bg-secondary">@category</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <h2>@Product.ProductPrice.ToString()</h2>
+                    <button class="btn btn-success" @onclick="async () => await AddToCart(Product)">Dodaj do koszyka</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public ProductMinimumInfoDto Product { get; set; }
+
+    private string ImgAddress => WebAddressHelper.Address + "/api/files/" + Product.ImageId;
+    
+    string imageBase64Str;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var noAuthenticationClient = ClientFactory.CreateClient("ServerAPI.NoAuthenticationClient");
+            using var response = await noAuthenticationClient.GetAsync(ImgAddress);
+            
+            response.EnsureSuccessStatusCode();
+
+            using var ms = new MemoryStream();
+            await response.Content.CopyToAsync(ms);
+        
+            var imageBytes = ms.ToArray();
+            imageBase64Str = $"data:image/jpeg;base64,{Convert.ToBase64String(imageBytes)}";
+        }
+        catch (Exception ex)
+        {
+            imageBase64Str = "";
+        }  
+    }
+
+    private async Task AddToCart(ProductMinimumInfoDto productMinimumInfoDto)
+    {
+        await CartService.AddToCart(productMinimumInfoDto);
+    }
+}

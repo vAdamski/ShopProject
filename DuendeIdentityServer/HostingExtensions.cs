@@ -54,11 +54,8 @@ internal static class HostingExtensions
         
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("CORS", policy => policy.WithOrigins(
-                    "https://localhost:5001",
-                    "https://localhost:6001",
-                    "https://localhost:7001"
-                )
+            options.AddPolicy("CORS", policy => policy
+                .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
         });
